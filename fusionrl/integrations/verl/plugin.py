@@ -84,7 +84,34 @@ def policy_loss(
     loss = loss * dp_size
     result = {f"actor/fusionrl_{key}": value for key, value in metrics.items()}
     result["actor/fusionrl_global_execution_count"] = float(global_count)
+    _check_engine_parity(metrics, result)
     return loss, result
+
+
+def _check_engine_parity(metrics: dict, result: dict) -> None:
+    """Fail fast on a rollout-engine/training-engine probability mismatch.
+
+    The supported profile is strict sync with one minibatch and one epoch, so
+    every microbatch is scored under the same weights that sampled it. The
+    log-ratio is then pure engine numerics (precision, kernels, sampler). The
+    execution clip is +/-0.5% on the mean log ratio: a mismatch near that size
+    silently drops executions before any update has happened.
+    Override limits with FUSIONRL_MAX_ROLLOUT_TRAIN_GAP (mean |log ratio| per
+    token, default 0.1) and FUSIONRL_MAX_STRICT_CLIP_FRACTION (default 0.2).
+    """
+    tokens = metrics["target_tokens"]
+    gap = metrics["abs_log_ratio_sum"] / tokens if tokens else 0.0
+    nonempty = metrics["execution_count"] - metrics["empty_executions"]
+    result["actor/fusionrl_rollout_train_gap_mean"] = gap
+    result["actor/fusionrl_rollout_train_gap_max"] = metrics["max_abs_log_ratio"]
+    max_gap = float(os.getenv("FUSIONRL_MAX_ROLLOUT_TRAIN_GAP", "0.1"))
+    max_clip = float(os.getenv("FUSIONRL_MAX_STRICT_CLIP_FRACTION", "0.2"))
+    if tokens and gap > max_gap:
+        raise VerlContractError(f"rollout/training log-prob gap {gap:.4g} per token exceeds {max_gap}; check that "
+                                "rollout and actor use matching precision, logits processing and sampler settings")
+    if nonempty >= 8 and metrics["clip_fraction"] > max_clip:
+        raise VerlContractError(f"{metrics['clip_fraction']:.0%} of executions were clipped before any update; the "
+                                "rollout and training engines disagree by more than the execution clip range")
 
 
 def ensure_registered() -> None:

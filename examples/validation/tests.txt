@@ -14,6 +14,21 @@ test_actual_parquet_streams_all_five_schemas_and_round_trips (test_data.ParquetD
 test_prepare_mimo_cli_reports_consumed_iterator_count (test_data.ParquetDataTests.test_prepare_mimo_cli_reports_consumed_iterator_count) ... ok
 test_full_vocab_shared_mapping_and_teacher_detach (test_distillation.DistillationTests.test_full_vocab_shared_mapping_and_teacher_detach) ... ok
 test_mask_and_identity (test_distillation.DistillationTests.test_mask_and_identity) ... ok
+test_gate_fails_closed (test_integrity.AttestationTests.test_gate_fails_closed) ... ok
+test_static_dataset_audit (test_integrity.AttestationTests.test_static_dataset_audit) ... ok
+test_image_round_trip (test_integrity.DockerImageTests.test_image_round_trip) ... ok
+test_network_none_blocks_every_probe (test_integrity.DockerImageTests.test_network_none_blocks_every_probe) ... ok
+test_leaks_are_found_and_hardening_removes_them (test_integrity.EnvironmentAuditTests.test_leaks_are_found_and_hardening_removes_them) ... ok
+test_untrusted_git_config_is_never_executed (test_integrity.EnvironmentAuditTests.test_untrusted_git_config_is_never_executed) ... ok
+test_hack_is_strictly_worse_than_honest_failure (test_integrity.HackPenaltyTests.test_hack_is_strictly_worse_than_honest_failure) ... ok
+test_scheduler_can_quarantine_a_completed_group (test_integrity.HackPenaltyTests.test_scheduler_can_quarantine_a_completed_group) ... ok
+test_exploits_reported_by_vals_are_detected (test_integrity.MonitorTests.test_exploits_reported_by_vals_are_detected) ... ok
+test_group_decisions_fail_closed (test_integrity.MonitorTests.test_group_decisions_fail_closed) ... ok
+test_ledger_revokes_tasks_and_halts (test_integrity.MonitorTests.test_ledger_revokes_tasks_and_halts) ... ok
+test_ordinary_engineering_is_not_flagged (test_integrity.MonitorTests.test_ordinary_engineering_is_not_flagged) ... ok
+test_protected_paths_and_reasoning_signals (test_integrity.MonitorTests.test_protected_paths_and_reasoning_signals) ... ok
+test_candidate_edits_to_hidden_tests_are_dropped (test_integrity.RulesAndGradingTests.test_candidate_edits_to_hidden_tests_are_dropped) ... ok
+test_rules_name_each_monitored_channel (test_integrity.RulesAndGradingTests.test_rules_name_each_monitored_channel) ... ok
 test_denominator_cannot_drop_empty_slots (test_objective.NumpyObjectiveTests.test_denominator_cannot_drop_empty_slots) ... ok
 test_empty_original_slots_keep_weight (test_objective.NumpyObjectiveTests.test_empty_original_slots_keep_weight) ... ok
 test_masked_nan_ignored_but_active_nan_rejected (test_objective.NumpyObjectiveTests.test_masked_nan_ignored_but_active_nan_rejected) ... ok
@@ -27,6 +42,16 @@ test_upper_loss_cap_not_absolute_clip (test_objective.TorchObjectiveTests.test_u
 test_artifact_and_execution_binding_are_enforced (test_pipeline.PipelineTests.test_artifact_and_execution_binding_are_enforced) ... ok
 test_different_routes_share_loss_batch_without_sharing_baselines (test_pipeline.PipelineTests.test_different_routes_share_loss_batch_without_sharing_baselines) ... ok
 test_group_size_and_missing_slots_cannot_change_weighting (test_pipeline.PipelineTests.test_group_size_and_missing_slots_cannot_change_weighting) ... ok
+test_dropout_is_disabled_for_scoring (test_real_model.HFBackendTests.test_dropout_is_disabled_for_scoring) ... ok
+test_gumbel_sampling_matches_the_softmax (test_real_model.HFBackendTests.test_gumbel_sampling_matches_the_softmax) ... ok
+test_recorded_logprobs_match_an_independent_forward (test_real_model.HFBackendTests.test_recorded_logprobs_match_an_independent_forward) ... ok
+test_selective_scoring_matches_full_logits_and_is_differentiable (test_real_model.HFBackendTests.test_selective_scoring_matches_full_logits_and_is_differentiable) ... ok
+test_sequence_and_context_learner_paths_agree (test_real_model.HFBackendTests.test_sequence_and_context_learner_paths_agree) ... ok
+test_tokenizer_fingerprint_covers_mapping_and_template (test_real_model.HFBackendTests.test_tokenizer_fingerprint_covers_mapping_and_template) ... ok
+test_evaluator_failures_are_retried_not_trained (test_real_model.RunnerTests.test_evaluator_failures_are_retried_not_trained) ... ok
+test_parity_and_integrity_guards (test_real_model.RunnerTests.test_parity_and_integrity_guards) ... ok
+test_resume_reproduces_an_uninterrupted_run (test_real_model.RunnerTests.test_resume_reproduces_an_uninterrupted_run) ... ok
+test_two_data_parallel_ranks_match_one_process (test_real_model.RunnerTests.test_two_data_parallel_ranks_match_one_process) ... ok
 test_capped_gar_recenters_both_successes_and_failures (test_rewards.RewardTests.test_capped_gar_recenters_both_successes_and_failures) ... ok
 test_cost_centering_equals_centering_combined_rewards (test_rewards.RewardTests.test_cost_centering_equals_centering_combined_rewards) ... ok
 test_effort_decay_and_cap (test_rewards.RewardTests.test_effort_decay_and_cap) ... ok
@@ -88,6 +113,7 @@ test_batch_microbatch_configuration_rejected (test_verl_contract.ConfigContractT
 test_second_correction_or_prompt_mean_rejected (test_verl_contract.ConfigContractTests.test_second_correction_or_prompt_mean_rejected) ... ok
 test_supported_profile (test_verl_contract.ConfigContractTests.test_supported_profile) ... ok
 test_binary_advantage_and_nonbinary_failure (test_verl_contract.LossAdapterTests.test_binary_advantage_and_nonbinary_failure) ... ok
+test_engine_mismatch_fails_fast_and_is_reported (test_verl_contract.LossAdapterTests.test_engine_mismatch_fails_fast_and_is_reported) ... ok
 test_extra_weights_rejected (test_verl_contract.LossAdapterTests.test_extra_weights_rejected) ... ok
 test_policy_loss_matches_core_and_global_microbatch_sum (test_verl_contract.LossAdapterTests.test_policy_loss_matches_core_and_global_microbatch_sum) ... ok
 test_actual_source_signatures_and_patch_application (test_verl_contract.PinnedSourceTests.test_actual_source_signatures_and_patch_application) ... ok
@@ -95,6 +121,6 @@ test_manifest_has_expected_api_and_exact_hashes (test_verl_contract.PinnedSource
 test_real_hydra_defaults_compose_and_validate (test_verl_contract.PinnedSourceTests.test_real_hydra_defaults_compose_and_validate) ... ok
 
 ----------------------------------------------------------------------
-Ran 95 tests in 3.055s
+Ran 121 tests in 36.615s
 
 OK

@@ -14,6 +14,7 @@ dependencies = ["numpy>=1.24,<3"]
 [project.optional-dependencies]
 train = ["torch>=2.6,<3"]
 data = ["pyarrow>=15", "huggingface_hub>=0.24"]
+real = ["torch>=2.6,<3", "transformers>=4.46", "tokenizers>=0.20", "safetensors>=0.4"]
 
 [project.scripts]
 fusionrl = "fusionrl.cli:main"

@@ -98,6 +98,10 @@ this map; `resolve_image_alias` requires an exact entry. A production deployment
 should record the resolved immutable container digest, because pinning a
 dataset commit does not freeze a registry tag's contents.
 
+## Environment integrity
+
+Treat MiMo task images as untrusted until audited. vals.ai found reference fixes reachable through git history, unreachable objects and file timestamps in this task family. A FusionRL audit of a real image confirmed the timestamp leak. All code rows also use mutable image tags and a grading script path inside the workspace. Use `fusionrl integrity audit-dataset`, `scripts/audit_mimo_images.py --attest` and `IntegrityGate` before any training run; see [integrity.md](integrity.md).
+
 ## Required environment boundaries
 
 A registered runner owns reset, action execution, timeout handling, evaluation

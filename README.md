@@ -2,7 +2,7 @@
 
 **One execution-level RL learner, with compatible data, grading and scheduling contracts.**
 
-FusionRL combines selected ideas from the six requested sources. It is a runnable research reference with a source-pinned integration for XiaomiMiMo/verl. Its CPU trainer performs actual autoregressive policy sampling, reward computation, gradient updates and checkpoint export. Its asynchronous demo drives the same controller with delayed groups; it does not simulate or claim GPU throughput.
+FusionRL combines selected ideas from the six requested sources. It is a runnable research reference with a source-pinned integration for XiaomiMiMo/verl. It now also trains real Hugging Face causal LMs (`fusionrl train`, single GPU or `torchrun` data parallel; see [docs/real_models.md](docs/real_models.md)). It also defends against the environment leaks vals.ai found in MiMo RL tasks, with audited and hardened images, an attestation gate, a trajectory monitor and explicit rules; see [docs/integrity.md](docs/integrity.md). Its CPU demo trainer performs actual autoregressive policy sampling, reward computation, gradient updates and checkpoint export; it does not simulate or claim GPU throughput.
 
 Start with [the design and compatibility decisions](docs/design.md), then [the algorithm](docs/algorithm.md). The exact source references and revisions are in [SOURCES.md](SOURCES.md) and [sources.json](sources.json). The source reports and datasets are not interchangeable implementations of one algorithm; FusionRL explicitly changes their boundaries before combining them.
 
@@ -28,6 +28,22 @@ A single seed is a noisy summary: final scores of one profile can differ by more
 
 For a very short installation check, use `configs/smoke.json`. For asynchronous admission, use `configs/bounded_async.json`. A generated synthetic token count is a demonstration variable; it is not an LLM reasoning-token measurement.
 
+## Real models and reward-hacking defenses
+
+```bash
+python -m pip install -e '.[real]'
+fusionrl preflight --config configs/real/qwen2.5-1.5b-math-1gpu.json   # hardware, memory, parity
+fusionrl train --config configs/real/qwen2.5-1.5b-math-1gpu.json --output runs/math [--resume]
+fusionrl integrity audit-dataset --input code.jsonl                     # static task checks
+fusionrl integrity audit-image --image IMG --workspace /testbed         # git, timestamps, leftovers
+python scripts/audit_mimo_images.py --tasks code.jsonl --image-map image-mapping.jsonl \
+    --attest --store attestations/ --probe-image busybox --output audit.jsonl
+```
+
+The real-model path was checked on CPU. With Qwen2.5-0.5B-Instruct, rollout and training log-probabilities agree to about 2e-6 and checkpoints reload bit-exact. With a tiny Llama in the test suite, resume reproduces an uninterrupted run exactly and two data-parallel ranks match one process. It has not been run on a GPU here. Run `preflight` on your hardware first.
+
+In the pinned MiMo dataset, a real code-task image (`format-code-task-001457`) leaks the reference fix's file list through timestamps, as vals.ai reported. All 2,602 code tasks use mutable image tags and grade from a script path inside the agent workspace. Hardening removes the leak without changing task behavior. Do not train on MiMo environments that have not been attested.
+
 ## Included profiles
 
 | Configuration | Purpose | Important contract |
@@ -50,7 +66,9 @@ These are small demonstration settings, not copied production batch sizes or tun
 - A Seer-inspired chunk scheduler and elastic resource guards. These return decisions for a backend to execute.
 - A real tiny causal CPU trainer with batched incremental rollout sampling, optional synthetic SFT and full-vocabulary reverse-KL distillation, numerical oracle, multi-seed sweeps, tests, and recorded validation runs.
 - A MiMo parquet/JSONL adapter covering the actual five subset schemas, plus a revision-pinned download script.
-- A four-file patch and checked FSDP/FSDP2 integration for the pinned MiMo verl fork's strict-sync, single-row, binary-reward path.
+- A four-file patch and checked FSDP/FSDP2 integration for the pinned MiMo verl fork's strict-sync, single-row, binary-reward path, with a fail-fast rollout/training parity guard.
+- A real-model trainer for Hugging Face causal LMs, with exact behavior probabilities, per-execution reproducible sampling, memory-bounded sequence scoring, data parallelism, resumable checkpoints and a preflight check.
+- Reward-hacking defenses: streamed image audits and hardening, attestation-gated admission with egress probes, explicit channel rules, a trajectory monitor with task revocation and halting, hack penalties, and grader-side patch sanitization.
 
 ## Scope of the GPU integration
 
@@ -87,6 +105,8 @@ Without that checkout the source-dependent checks are skipped with explicit mess
 | `fusionrl/rewards.py`, `data.py` | Reward math and source-specific task import |
 | `fusionrl/trajectory.py`, `scheduler.py` | Admission, provenance, chunks, quotas and resource guards |
 | `fusionrl/trainer.py`, `tiny_policy.py`, `distillation.py`, `sweep.py` | Executable CPU stages and seed sweeps |
+| `fusionrl/runner.py`, `run_config.py`, `backends/hf.py`, `verifiers.py`, `preflight.py` | Real-model training |
+| `fusionrl/integrity/` | Environment audit/hardening, attestation, rules, monitor, grading |
 | `fusionrl/integrations/verl/`, `patches/` | Pin-aware integration and local upstream patch |
 | `configs/`, `scripts/`, `.github/` | Ready demonstration profiles, data fetch, upstream bootstrap and CI |
 | `docs/`, `tests/`, `examples/validation/` | Design rationale, reproducible checks and measured evidence |

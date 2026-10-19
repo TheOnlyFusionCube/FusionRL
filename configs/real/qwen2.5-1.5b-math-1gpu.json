@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model": {"path": "Qwen/Qwen2.5-1.5B-Instruct", "precision": "bf16-autocast", "device": "cuda",
+            "gradient_checkpointing": true, "attn_implementation": "sdpa"},
+  "data": {"train": "/data/math/train.jsonl", "verifier": "math_answer", "max_prompt_tokens": 1024,
+           "system_prompt": "Reason step by step and put the final answer in \\boxed{}."},
+  "schedule": {"mode": "strict_sync", "groups_per_update": 16, "executions_per_group": 8},
+  "reward": {"route": "binary", "hack_penalty": 1.0},
+  "optim": {"learning_rate": 1e-6, "weight_decay": 0.0, "warmup_steps": 10, "gradient_clip": 1.0},
+  "rollout": {"max_new_tokens": 2048, "generation_batch_size": 64},
+  "learner": {"max_tokens_per_microbatch": 16384},
+  "parity": {"max_mean_abs_gap": 0.05, "max_abs_gap": 5.0, "max_strict_clip_fraction": 0.2},
+  "checkpoint": {"every": 25, "keep_last": 2},
+  "run": {"steps": 500, "seed": 0}
+}

@@ -11,7 +11,7 @@ and whole-group quarantine for invalid infrastructure/evaluation outcomes.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import math
 from typing import Iterable
 
@@ -182,9 +182,17 @@ class RolloutGroup:
 
 @dataclass(frozen=True)
 class TrainingTarget:
+    """One admitted target token and its ORIGINAL causal context.
+
+    ``sequence`` is shared by every target of one generation event (input
+    plus all outputs), and ``context_length`` marks where this target's
+    context ends, so memory stays linear in the event length. A negative
+    ``context_length`` means ``sequence`` is exactly the context (the token
+    is not included), which keeps hand-built targets simple.
+    """
     target_id: tuple[str, int]
     token_id: int
-    context: tuple[int, ...]
+    sequence: tuple[int, ...] = field(repr=False, compare=False)
     behavior_logp: float
     policy_version: int
     execution_id: str
@@ -193,6 +201,21 @@ class TrainingTarget:
     role: str
     branch_id: str
     actor_id: str
+    context_length: int = -1
+
+    @property
+    def context(self) -> tuple[int, ...]:
+        return self.sequence if self.context_length < 0 else self.sequence[:self.context_length]
+
+    def scoring_view(self) -> tuple[tuple[int, ...], int]:
+        """``(sequence, position)`` with ``sequence[position] == token_id``.
+
+        The target's log probability is the model's prediction at index
+        ``position - 1`` of ``sequence``. Targets of one event share the object.
+        """
+        if self.context_length < 0:
+            return self.sequence + (self.token_id,), len(self.sequence)
+        return self.sequence, self.context_length
 
     @property
     def behavior_log_prob(self) -> float:
@@ -298,6 +321,8 @@ def _admit_execution(execution: ExecutionRecord, index: int, current_version: in
                             if (event_id, offset) in eligible)
         for path in execution.paths
     }
+    # One shared token tuple per event keeps target contexts O(length), not O(length^2).
+    full_sequences = {event.event_id: event.input_token_ids + event.output_token_ids for event in execution.events}
     available = set(eligible)
     candidates = list(execution.paths)
     selected_paths: list[str] = []
@@ -317,7 +342,8 @@ def _admit_execution(execution: ExecutionRecord, index: int, current_version: in
             targets.append(TrainingTarget(
                 target_id=(event_id, offset),
                 token_id=event.output_token_ids[offset],
-                context=event.input_token_ids + event.output_token_ids[:offset],
+                sequence=full_sequences[event_id],
+                context_length=len(event.input_token_ids) + offset,
                 behavior_logp=float(event.behavior_log_probs[offset]),
                 policy_version=event.policy_versions[offset],
                 execution_id=execution.execution_id,

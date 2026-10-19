@@ -92,6 +92,9 @@ def execution_loss_numpy(
         "empty_executions": float((~nonempty).sum()),
         "clip_fraction": float(clipped[nonempty].mean()) if nonempty.any() else 0.0,
         "mean_log_ratio": float(mean_log_ratio[nonempty].mean()) if nonempty.any() else 0.0,
+        "abs_log_ratio_sum": float((np.abs(delta) * mask).sum()),
+        "max_abs_log_ratio": float((np.abs(delta) * mask).max()) if mask.any() else 0.0,
+        "clipped_executions": float(clipped[nonempty].sum()),
         "loss": loss,
     }
     return loss, metrics
@@ -161,6 +164,12 @@ def execution_loss(
         "empty_executions": float((~nonempty).sum().item()),
         "clip_fraction": float(clipped[nonempty].float().mean().item()) if nonempty.any().item() else 0.0,
         "mean_log_ratio": float(mean_log_ratio[nonempty].mean().item()) if nonempty.any().item() else 0.0,
+        # Token-level |log pi_theta - log p_roll| over admitted targets. Before
+        # the first update of a strict-sync batch this is exactly the
+        # rollout-engine versus training-engine mismatch.
+        "abs_log_ratio_sum": float((delta.abs() * action_mask).sum().item()),
+        "max_abs_log_ratio": float((delta.abs() * action_mask).max().item()) if action_mask.any().item() else 0.0,
+        "clipped_executions": float(clipped[nonempty].sum().item()),
         "loss": float(loss.detach().item()),
     }
     return loss, metrics

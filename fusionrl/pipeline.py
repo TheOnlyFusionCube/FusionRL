@@ -28,6 +28,7 @@ class GroupSupervision:
     confirmed_hacks: tuple[bool,...] | None = None
     cost_penalties: tuple[float,...] | None = None
     gar_cap: float = 2.0
+    hack_penalty: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -60,7 +61,7 @@ def prepare_step(groups: Sequence[AdmittedGroup], supervision: Mapping[str,Group
         results[group.group_id]=compute_advantages(outcomes,route=grade.route,
             solution_scores=grade.solution_scores,behavior_scores=grade.behavior_scores,
             quality_factors=grade.quality_factors,confirmed_hacks=grade.confirmed_hacks,
-            cost_penalties=grade.cost_penalties,gar_cap=grade.gar_cap)
+            cost_penalties=grade.cost_penalties,gar_cap=grade.gar_cap,hack_penalty=grade.hack_penalty)
     batch=assemble_batch(groups,[results[g.group_id].advantages for g in groups])
     return PreparedStep(batch,results)
 

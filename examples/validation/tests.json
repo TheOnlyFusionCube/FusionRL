@@ -1,13 +1,13 @@
 {
-  "tests_run": 95,
+  "tests_run": 121,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "passed": 95,
+  "passed": 121,
   "successful": true,
   "source_checkout_supplied": true,
   "python": "3.13.16",
-  "elapsed_seconds": 4.699167318000036,
+  "elapsed_seconds": 39.59633334299997,
   "tests": [
     {
       "test": "test_config.ConfigurationTests.test_defaults_valid",
@@ -74,6 +74,66 @@
       "status": "passed"
     },
     {
+      "test": "test_integrity.AttestationTests.test_gate_fails_closed",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.AttestationTests.test_static_dataset_audit",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.DockerImageTests.test_image_round_trip",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.DockerImageTests.test_network_none_blocks_every_probe",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.EnvironmentAuditTests.test_leaks_are_found_and_hardening_removes_them",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.EnvironmentAuditTests.test_untrusted_git_config_is_never_executed",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.HackPenaltyTests.test_hack_is_strictly_worse_than_honest_failure",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.HackPenaltyTests.test_scheduler_can_quarantine_a_completed_group",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.MonitorTests.test_exploits_reported_by_vals_are_detected",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.MonitorTests.test_group_decisions_fail_closed",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.MonitorTests.test_ledger_revokes_tasks_and_halts",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.MonitorTests.test_ordinary_engineering_is_not_flagged",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.MonitorTests.test_protected_paths_and_reasoning_signals",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.RulesAndGradingTests.test_candidate_edits_to_hidden_tests_are_dropped",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.RulesAndGradingTests.test_rules_name_each_monitored_channel",
+      "status": "passed"
+    },
+    {
       "test": "test_objective.NumpyObjectiveTests.test_denominator_cannot_drop_empty_slots",
       "status": "passed"
     },
@@ -123,6 +183,46 @@
     },
     {
       "test": "test_pipeline.PipelineTests.test_group_size_and_missing_slots_cannot_change_weighting",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.HFBackendTests.test_dropout_is_disabled_for_scoring",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.HFBackendTests.test_gumbel_sampling_matches_the_softmax",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.HFBackendTests.test_recorded_logprobs_match_an_independent_forward",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.HFBackendTests.test_selective_scoring_matches_full_logits_and_is_differentiable",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.HFBackendTests.test_sequence_and_context_learner_paths_agree",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.HFBackendTests.test_tokenizer_fingerprint_covers_mapping_and_template",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.RunnerTests.test_evaluator_failures_are_retried_not_trained",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.RunnerTests.test_parity_and_integrity_guards",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.RunnerTests.test_resume_reproduces_an_uninterrupted_run",
+      "status": "passed"
+    },
+    {
+      "test": "test_real_model.RunnerTests.test_two_data_parallel_ranks_match_one_process",
       "status": "passed"
     },
     {
@@ -367,6 +467,10 @@
     },
     {
       "test": "test_verl_contract.LossAdapterTests.test_binary_advantage_and_nonbinary_failure",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.LossAdapterTests.test_engine_mismatch_fails_fast_and_is_reported",
       "status": "passed"
     },
     {

@@ -1,6 +1,6 @@
 # Executed validation
 
-FusionRL 0.1.0 was validated on October 19, 2026. The final suite ran **95 tests: 95 passed, zero failures, zero errors and zero skips**. Six fresh demonstration runs then exercised the final implementation, and each profile was repeated over eight seeds. The raw records, resolved run configurations, per-step metrics, example rollouts and tiny model exports are included in [examples/validation](../examples/validation/).
+FusionRL 0.1.0 was validated on October 19, 2026. The final suite ran **121 tests: 121 passed, zero failures, zero errors and zero skips** (with the pinned verl source, a Docker daemon and a probe image supplied). Six fresh demonstration runs then exercised the final implementation, and each profile was repeated over eight seeds. The raw records, resolved run configurations, per-step metrics, example rollouts and tiny model exports are included in [examples/validation](../examples/validation/).
 
 These results establish the behavior of the mathematical core, data import, control-plane contracts and CPU training path. They do not establish real-model quality, production throughput or distributed GPU correctness.
 
@@ -12,6 +12,8 @@ These results establish the behavior of the mathematical core, data import, cont
 | NumPy | 2.5.4 |
 | PyTorch | 2.6.0+cpu |
 | Hydra | 1.3.2 |
+| Transformers | 5.20.2 |
+| Docker Engine | 29.9.1 |
 | PyArrow | 26.0.0 |
 | Trainable demonstration policy | 7,246-parameter autoregressive GRU |
 | Demonstration task | `synthetic-symbol-copy-v1` |
@@ -27,15 +29,17 @@ The machine-readable report is [tests.json](../examples/validation/tests.json), 
 |---|---:|---|
 | Configuration | 4 | Schema validation, JSON field types, and rejection of incompatible routes or scheduling settings |
 | Data | 10 | All five MiMo subset schemas, separation of prompt/private metadata, actual parquet streaming and CLI record counts |
+| Integrity | 15 | Monitor catches each exploit vals.ai reported and ignores ordinary commands; fail-closed group decisions; task revocation and halting; rules; grader patch sanitization; hack penalty; leaky-repository audit, hardening (fix commit unrecoverable, uniform timestamps), hostile git config never executed; Docker image round trip; `--network none` probe |
 | Distillation | 2 | Full-vocabulary reverse-KL values, gradients and tokenizer-contract enforcement |
 | Objective | 10 | Independent numerical oracle, sign-aware execution clipping, detached importance weights, one-sided loss cap and original-execution denominator |
 | Pipeline | 3 | Supervision identity binding and integration of alternative grading routes with admission and learning |
 | Rewards | 14 | Binary, scalar, GRS and GAR algebra; hack correction; guarded alternative length costs |
 | Scheduler | 17 | Complete groups, fixed quotas, publication boundaries, actual-token lag, quarantine and in-place retry of version-mismatched groups, exactly-once consumption, cancellation and chunk/resource guards |
+| Real model | 10 | Tiny Llama/GPT-2: recorded vs independent log-probs, selective vs full head, Gumbel sampler vs softmax, dropout disabled for scoring, tokenizer fingerprint, sequence vs context learner paths, resume equals uninterrupted run, 2 DDP ranks equal 1 process, parity and integrity aborts, evaluator-failure retry |
 | Training | 5 | Real causal-policy updates and checkpoint evidence, batched sampling probabilities, delayed-group behavior, stage integration and seed sweeps |
 | Trajectory | 16 | Original contexts, shared-target deduplication, provenance and stale masks, invalid-group quarantine, retained original slots |
-| verl contract | 14 | Core/adapter value and gradient equivalence, microbatch and DP reduction, runtime restrictions, real source fingerprints/AST, patch application and Hydra composition |
-| **Total** | **95** | **Zero skipped** |
+| verl contract | 15 | Core/adapter value and gradient equivalence, microbatch and DP reduction, rollout/training parity guard, runtime restrictions, real source fingerprints/AST, patch application and Hydra composition |
+| **Total** | **121** | **Zero skipped** |
 
 The full source checks used a pristine checkout of `XiaomiMiMo/verl` at `79090e58195e80a9cfe251c95ae7a78a2132b6e2`. Patch application occurred in a disposable copy. Hydra composition resolved the actual pinned upstream YAML tree. These checks substantiate a specific interface and reduction contract; they do not execute Ray workers, FSDP collectives or GPU kernels.
 
@@ -111,6 +115,26 @@ python -m fusionrl sweep --config configs/gar.json --seeds 1 2 3 4 5 6 7 8 --out
 Use fresh output directories; completed training evidence is protected against accidental overwrite. The source pin and pristine-check procedure are documented in [verl.md](verl.md). Missing optional dependencies or missing upstream source cause explicit test skips; `--require-source` treats any skip as an incomplete verification run.
 
 The release builder creates a ZIP with fixed archive timestamps, excludes local environments and caches, and includes `MANIFEST.sha256` for every payload file. Build it with `python scripts/make_release.py --output ../FusionRL.zip`. The manifest covers the code and validation evidence; it excludes itself to avoid a recursive checksum.
+
+## Real-model checks
+
+Run on CPU with **Qwen2.5-0.5B-Instruct** (494M parameters, fp32), using the model's own tokenizer and chat template:
+
+| Check | Result |
+|---|---|
+| `fusionrl preflight`: selective head vs full forward | max difference 0.0 |
+| `fusionrl preflight`: rollout vs training log-prob gap, 154 sampled tokens | mean 2.1e-6, max 1.7e-5 |
+| `fusionrl train`, 3 steps (2 groups × 4 executions, ≤48 new tokens) | gap ≤ 3.9e-5 every step; ~20–60 s/step on 4 CPU cores |
+| Checkpoint reload into a fresh model | all 290 tensors bit-exact; tied embeddings preserved |
+
+These establish the plumbing and numerics on a real architecture and tokenizer. They are not a learning result. A 300-step run on the tiny Llama arithmetic fixture raised mean reward from 0.09 to about 0.21. No GPU run was possible here.
+
+## Integrity checks on real MiMo data
+
+- Static audit of all 2,602 code tasks: no hidden tests leaked into prompts; 2,602 mutable image tags; 2,602 grading commands at a workspace path.
+- Image `format-code-task-001457`: the timestamp leak is present (5 non-dependency files, including the reference fix's scope, are 72 s newer than the other 36), and git is clean. After hardening the audit passes, and the task behaves identically: same 24 Jest tests pass with `--network none`.
+- Image `format-code-task-001623`: passes the raw audit.
+- The other images of an 8-task sample did not finish downloading through the registry mirror during this session (Docker Hub rate limits). Re-run `scripts/audit_mimo_images.py` with registry credentials for population rates; vals.ai's figure for unreachable fix objects is 67%.
 
 ## Remaining deployment evidence
 

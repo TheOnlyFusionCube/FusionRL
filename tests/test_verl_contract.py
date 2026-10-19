@@ -184,6 +184,25 @@ class LossAdapterTests(unittest.TestCase):
         ddp, _ = policy_loss(old, new, adv, mask, config=config)
         torch.testing.assert_close(ddp / 2, expected)
 
+    def test_engine_mismatch_fails_fast_and_is_reported(self):
+        import torch
+        from fusionrl.integrations.verl.plugin import policy_loss
+
+        rows = 8
+        old = torch.full((rows, 4), -2., dtype=torch.float64)
+        mask = torch.ones((rows, 4), dtype=torch.bool)
+        adv = torch.tensor([.5, -.5] * 4, dtype=torch.float64)[:, None] * mask
+        config = SimpleNamespace(ppo_mini_batch_size=4, rollout_n=2,
+                                 global_batch_info={"dp_size": 1, "global_batch_size": rows})
+        _, metrics = policy_loss(old, (old + 1e-4).requires_grad_(), adv, mask, config=config)
+        self.assertAlmostEqual(metrics["actor/fusionrl_rollout_train_gap_mean"], 1e-4)
+        with self.assertRaisesRegex(VerlContractError, "gap"):
+            policy_loss(old, (old - 0.3).requires_grad_(), adv, mask, config=config)
+        # A small but systematic offset clips executions before any update.
+        skew = torch.where(adv > 0, 0.02, -0.02).to(torch.float64)
+        with self.assertRaisesRegex(VerlContractError, "clipped"):
+            policy_loss(old, (old + skew).requires_grad_(), adv, mask, config=config)
+
     def test_extra_weights_rejected(self):
         import torch
         from fusionrl.integrations.verl.plugin import policy_loss

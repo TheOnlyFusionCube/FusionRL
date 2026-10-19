@@ -203,6 +203,21 @@ class FusionScheduler:
             raise
         self._ready[group.group_id] = group
 
+    def quarantine(self, group_id: str, reason: str) -> None:
+        """Invalidate a live group after completion, e.g. when integrity
+        monitoring cannot clear it. It can then be retried in its slot."""
+        if not reason:
+            raise ValueError("quarantine requires an explicit recorded reason")
+        if group_id not in self._tickets:
+            raise ValueError("only a live dispatched group can be quarantined")
+        if self._inflight is not None and group_id in self._inflight:
+            raise RuntimeError("cannot quarantine a group owned by the current optimizer update")
+        if group_id in self._quarantined:
+            return
+        self._ready.pop(group_id, None)
+        self._quarantined[group_id] = reason
+        self.quarantine_history.append((group_id, reason))
+
     def replace_quarantined(self, old_group_id: str, new_group_id: str) -> GroupTicket:
         """Retry the entire invalid group in its reserved logical slot.
 

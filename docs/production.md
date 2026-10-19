@@ -4,6 +4,9 @@ The portable implementation is complete for its defined CPU reference and admiss
 
 ## Minimal supported GPU path
 
+For models that fit on one GPU, `fusionrl train` trains a Hugging Face causal LM directly ([real_models.md](real_models.md)). For anything with tools, repositories or containers, attest every environment first ([integrity.md](integrity.md)).
+
+
 Use the exact pinned XiaomiMiMo/verl revision and patch as described in [verl.md](verl.md). Start with a compatible causal model, a single-turn dataset and a binary verifier. Keep each physical row equal to one independent execution. Use a batch divisible by the data-parallel world size. Preserve the full-support sampler settings and actual behavior probabilities. This is the adapter whose source signatures, numerical reductions and Hydra composition were tested.
 
 Install the upstream CUDA/inference/TransferQueue dependencies in a separate environment using the pinned repository's requirements. The CPU validation's PyTorch wheel is not a GPU environment lock. The archive neither launches a cluster nor silently downloads weights or task containers.

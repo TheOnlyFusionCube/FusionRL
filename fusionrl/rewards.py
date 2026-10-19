@@ -71,6 +71,7 @@ def compute_advantages(
     confirmed_hacks: Sequence[bool] | None = None,
     cost_penalties: Sequence[float] | None = None,
     gar_cap: float = 2.0,
+    hack_penalty: float = 0.0,
 ) -> AdvantageResult:
     """Compute centered scalar advantages for one complete prompt group.
 
@@ -86,6 +87,11 @@ def compute_advantages(
     separately and added after binary/GRS/scalar advantages; this equals centering
     the sum of reward and cost. Nonzero costs with GAR are rejected, preserving
     GAR's binary derivation and avoiding two simultaneous concision signals.
+    ``hack_penalty`` (>= 0) subtracts that amount from every confirmed hack
+    as its own centered channel, after zeroing its reward. Zeroing alone gives
+    no signal against a hack when its groupmates also failed; the penalty
+    makes the hack strictly worse than an honest failure. It is an integrity
+    channel, not a length controller, so it is allowed with every route.
     No standard-deviation normalization or token-level shaping is applied.
     """
     if route not in {"binary", "grs", "gar", "scalar"}:
@@ -100,6 +106,9 @@ def compute_advantages(
     cap = _finite_scalar(gar_cap, "gar_cap")
     if cap < 1.0:
         raise ValueError("gar_cap must be at least 1")
+    penalty = _finite_scalar(hack_penalty, "hack_penalty")
+    if penalty < 0.0:
+        raise ValueError("hack_penalty must be nonnegative")
 
     hacks = np.zeros(n, dtype=bool)
     if confirmed_hacks is not None:
@@ -184,7 +193,10 @@ def compute_advantages(
                         })
 
     centered_cost = cost - cost.mean()
-    combined = routed + centered_cost
+    hack_channel = -penalty * hacks.astype(np.float64)
+    centered_hack = hack_channel - hack_channel.mean()
+    diag["hack_penalty"] = penalty
+    combined = routed + centered_cost + centered_hack
     # The arithmetic mean is removed once more only to eliminate rounding drift.
     combined -= combined.mean()
     diag["advantage_sum"] = float(combined.sum())

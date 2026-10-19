@@ -29,6 +29,16 @@ def main(argv: list[str] | None = None) -> None:
     sweep.add_argument("--seeds",type=int,nargs="+",default=[1,2,3,4,5])
     sweep.add_argument("--steps",type=int)
     sweep.add_argument("--quiet",action="store_true")
+    real=commands.add_parser("train",help="Train a real Hugging Face causal LM (single GPU or torchrun data parallel)")
+    real.add_argument("--config",type=Path,required=True)
+    real.add_argument("--output",type=Path,required=True)
+    real.add_argument("--resume",action="store_true",help="continue from the latest checkpoint in --output")
+    real.add_argument("--quiet",action="store_true")
+    check=commands.add_parser("preflight",help="Check hardware, memory and rollout/training parity before a run")
+    check.add_argument("--config",type=Path,required=True)
+    check.add_argument("--prompts",type=int,default=8)
+    from .integrity.cli import register as register_integrity
+    register_integrity(commands)
     commands.add_parser("doctor",help="Inspect dependency availability; never downloads or starts services")
     data=commands.add_parser("prepare-mimo",help="Normalize an already downloaded MiMo parquet file to canonical JSONL")
     data.add_argument("--subset",required=True,choices=["code","general","webdev","music","cyber"])
@@ -58,6 +68,21 @@ def main(argv: list[str] | None = None) -> None:
                 config=replace(config,train=replace(config.train,steps=args.steps)).validate()
             report=run_sweep(config,args.seeds,args.output,progress=not args.quiet)
             print(json.dumps({"seeds":report["seeds"],"final":report["aggregate"]["final"]},indent=2))
+        elif args.command=="train":
+            from .run_config import load_run_config
+            from .runner import run_training
+            print(json.dumps(run_training(load_run_config(args.config),args.output,resume=args.resume,
+                                          progress=not args.quiet),indent=2))
+        elif args.command=="preflight":
+            from .preflight import run_preflight
+            from .run_config import load_run_config
+            report=run_preflight(load_run_config(args.config),prompts=args.prompts)
+            print(json.dumps(report,indent=2))
+            if not report["passed"]:
+                raise SystemExit(1)
+        elif args.command=="integrity":
+            from .integrity.cli import run as run_integrity
+            run_integrity(args)
         elif args.command=="prepare-mimo":
             from .data import load_parquet,save_jsonl
             if args.output.exists():
@@ -65,7 +90,7 @@ def main(argv: list[str] | None = None) -> None:
             records=load_parquet(args.input,args.subset)
             count=save_jsonl(records,args.output)
             print(json.dumps({"output":str(args.output),"subset":args.subset,"tasks":count}))
-    except (ValueError,TypeError,FileNotFoundError,FileExistsError,ImportError,RuntimeError) as error:
+    except (ValueError,TypeError,FileNotFoundError,FileExistsError,ImportError,RuntimeError,OSError) as error:
         parser.exit(2,f"FusionRL: {error}\n")
 
 

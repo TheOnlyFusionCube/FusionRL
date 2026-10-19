@@ -60,6 +60,8 @@ The following is a selection map, not a claim that the combined system inherits 
 | Invalid infrastructure outcome as reward zero | Quarantine | No policy outcome was validly evaluated. Recreate the entire group in its reserved slot. |
 | Old KV after a generic model weight update | Invalidate | Same text does not imply same hidden states. Use original context with a fresh prefill under the new weights. |
 | Full-vocabulary OPD between arbitrary tokenizers | Reject | Vocabulary size equality does not establish token-ID or normalization equivalence. |
+| Zeroing only detected hacks (MiMo grader) | Modify | Undetected exploits stay rewarded. FusionRL removes leaks first (attested, hardened images; blocked egress), counts attempts on named channels as hacks, adds a hack penalty, revokes leaky tasks and halts on a sustained hack rate. See [integrity.md](integrity.md). |
+| Inheriting a checkpoint's `generation_config` for rollouts | Reject | Many instruct checkpoints ship top-p/top-k/temperature/repetition penalties, so recorded probabilities would be those of a truncated sampler. The real-model sampler uses raw logits at temperature 1 with full support. |
 | MoE router freezing plus routing replay | Backend-specific | Freezing does not guarantee identical routing after other parameters change. Dense demo uses neither; a real MoE path must implement and validate both declared capabilities. |
 
 ## Why the execution is the unit of weight
