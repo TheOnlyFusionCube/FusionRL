@@ -1,6 +1,6 @@
 # Executed validation
 
-FusionRL 0.1.0 was validated on October 19, 2026. The final suite ran **121 tests: 121 passed, zero failures, zero errors and zero skips** (with the pinned verl source, a Docker daemon and a probe image supplied). Six fresh demonstration runs then exercised the final implementation, and each profile was repeated over eight seeds. The raw records, resolved run configurations, per-step metrics, example rollouts and tiny model exports are included in [examples/validation](../examples/validation/).
+FusionRL 0.1.0 was validated on October 19, 2026. The final suite ran **122 tests: 122 passed, zero failures, zero errors and zero skips** (with the pinned verl source, a Docker daemon and a probe image supplied). Six fresh demonstration runs then exercised the final implementation, and each profile was repeated over eight seeds. The raw records, resolved run configurations, per-step metrics, example rollouts and tiny model exports are included in [examples/validation](../examples/validation/).
 
 These results establish the behavior of the mathematical core, data import, control-plane contracts and CPU training path. They do not establish real-model quality, production throughput or distributed GPU correctness.
 
@@ -29,7 +29,7 @@ The machine-readable report is [tests.json](../examples/validation/tests.json), 
 |---|---:|---|
 | Configuration | 4 | Schema validation, JSON field types, and rejection of incompatible routes or scheduling settings |
 | Data | 10 | All five MiMo subset schemas, separation of prompt/private metadata, actual parquet streaming and CLI record counts |
-| Integrity | 15 | Monitor catches each exploit vals.ai reported and ignores ordinary commands; fail-closed group decisions; task revocation and halting; rules; grader patch sanitization; hack penalty; leaky-repository audit, hardening (fix commit unrecoverable, uniform timestamps), hostile git config never executed; Docker image round trip; `--network none` probe |
+| Integrity | 16 | Monitor catches each exploit vals.ai reported and ignores ordinary commands; fail-closed group decisions; task revocation and halting; rules; grader patch sanitization; hack penalty; leaky-repository audit, hardening (fix commit unrecoverable, uniform timestamps), hostile git config never executed; Docker image round trip; `--network none` probe |
 | Distillation | 2 | Full-vocabulary reverse-KL values, gradients and tokenizer-contract enforcement |
 | Objective | 10 | Independent numerical oracle, sign-aware execution clipping, detached importance weights, one-sided loss cap and original-execution denominator |
 | Pipeline | 3 | Supervision identity binding and integration of alternative grading routes with admission and learning |
@@ -39,7 +39,7 @@ The machine-readable report is [tests.json](../examples/validation/tests.json), 
 | Training | 5 | Real causal-policy updates and checkpoint evidence, batched sampling probabilities, delayed-group behavior, stage integration and seed sweeps |
 | Trajectory | 16 | Original contexts, shared-target deduplication, provenance and stale masks, invalid-group quarantine, retained original slots |
 | verl contract | 15 | Core/adapter value and gradient equivalence, microbatch and DP reduction, rollout/training parity guard, runtime restrictions, real source fingerprints/AST, patch application and Hydra composition |
-| **Total** | **121** | **Zero skipped** |
+| **Total** | **122** | **Zero skipped** |
 
 The full source checks used a pristine checkout of `XiaomiMiMo/verl` at `79090e58195e80a9cfe251c95ae7a78a2132b6e2`. Patch application occurred in a disposable copy. Hydra composition resolved the actual pinned upstream YAML tree. These checks substantiate a specific interface and reduction contract; they do not execute Ray workers, FSDP collectives or GPU kernels.
 
