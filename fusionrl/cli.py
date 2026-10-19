@@ -23,6 +23,12 @@ def main(argv: list[str] | None = None) -> None:
     train.add_argument("--output",type=Path,required=True)
     train.add_argument("--steps",type=int)
     train.add_argument("--quiet",action="store_true")
+    sweep=commands.add_parser("sweep",help="Repeat train-demo over several seeds and report mean/std/min/max")
+    sweep.add_argument("--config",type=Path)
+    sweep.add_argument("--output",type=Path,required=True)
+    sweep.add_argument("--seeds",type=int,nargs="+",default=[1,2,3,4,5])
+    sweep.add_argument("--steps",type=int)
+    sweep.add_argument("--quiet",action="store_true")
     commands.add_parser("doctor",help="Inspect dependency availability; never downloads or starts services")
     data=commands.add_parser("prepare-mimo",help="Normalize an already downloaded MiMo parquet file to canonical JSONL")
     data.add_argument("--subset",required=True,choices=["code","general","webdev","music","cyber"])
@@ -45,6 +51,13 @@ def main(argv: list[str] | None = None) -> None:
             if args.steps is not None:
                 config=replace(config,train=replace(config.train,steps=args.steps)).validate()
             print(json.dumps(run_demo(config,args.output,progress=not args.quiet),indent=2))
+        elif args.command=="sweep":
+            from .sweep import run_sweep
+            config=load_config(args.config) if args.config else FusionConfig().validate()
+            if args.steps is not None:
+                config=replace(config,train=replace(config.train,steps=args.steps)).validate()
+            report=run_sweep(config,args.seeds,args.output,progress=not args.quiet)
+            print(json.dumps({"seeds":report["seeds"],"final":report["aggregate"]["final"]},indent=2))
         elif args.command=="prepare-mimo":
             from .data import load_parquet,save_jsonl
             if args.output.exists():

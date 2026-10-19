@@ -1,6 +1,6 @@
 # Executed validation
 
-FusionRL 0.1.0 was validated on October 19, 2026. The final suite ran **92 tests: 92 passed, zero failures, zero errors and zero skips**. Six fresh demonstration runs then exercised the final implementation. The raw records, resolved run configurations, per-step metrics, example rollouts and tiny model exports are included in [examples/validation](../examples/validation/).
+FusionRL 0.1.0 was validated on October 19, 2026. The final suite ran **95 tests: 95 passed, zero failures, zero errors and zero skips**. Six fresh demonstration runs then exercised the final implementation, and each profile was repeated over eight seeds. The raw records, resolved run configurations, per-step metrics, example rollouts and tiny model exports are included in [examples/validation](../examples/validation/).
 
 These results establish the behavior of the mathematical core, data import, control-plane contracts and CPU training path. They do not establish real-model quality, production throughput or distributed GPU correctness.
 
@@ -8,11 +8,11 @@ These results establish the behavior of the mathematical core, data import, cont
 
 | Component | Executed version |
 |---|---|
-| Python | 3.12.14 |
-| NumPy | 2.3.5 |
+| Python | 3.13.16 |
+| NumPy | 2.5.4 |
 | PyTorch | 2.6.0+cpu |
 | Hydra | 1.3.2 |
-| PyArrow | 19.0.1 |
+| PyArrow | 26.0.0 |
 | Trainable demonstration policy | 7,246-parameter autoregressive GRU |
 | Demonstration task | `synthetic-symbol-copy-v1` |
 | Demonstration seed | 7 |
@@ -25,17 +25,17 @@ The machine-readable report is [tests.json](../examples/validation/tests.json), 
 
 | Test module | Passed | Principal evidence |
 |---|---:|---|
-| Configuration | 3 | Schema validation and rejection of incompatible routes or scheduling settings |
+| Configuration | 4 | Schema validation, JSON field types, and rejection of incompatible routes or scheduling settings |
 | Data | 10 | All five MiMo subset schemas, separation of prompt/private metadata, actual parquet streaming and CLI record counts |
 | Distillation | 2 | Full-vocabulary reverse-KL values, gradients and tokenizer-contract enforcement |
 | Objective | 10 | Independent numerical oracle, sign-aware execution clipping, detached importance weights, one-sided loss cap and original-execution denominator |
 | Pipeline | 3 | Supervision identity binding and integration of alternative grading routes with admission and learning |
 | Rewards | 14 | Binary, scalar, GRS and GAR algebra; hack correction; guarded alternative length costs |
-| Scheduler | 17 | Complete groups, fixed quotas, publication boundaries, actual-token lag, exactly-once consumption, cancellation and chunk/resource guards |
-| Training | 3 | Real causal-policy updates and checkpoint evidence, delayed-group behavior and stage integration |
+| Scheduler | 17 | Complete groups, fixed quotas, publication boundaries, actual-token lag, quarantine and in-place retry of version-mismatched groups, exactly-once consumption, cancellation and chunk/resource guards |
+| Training | 5 | Real causal-policy updates and checkpoint evidence, batched sampling probabilities, delayed-group behavior, stage integration and seed sweeps |
 | Trajectory | 16 | Original contexts, shared-target deduplication, provenance and stale masks, invalid-group quarantine, retained original slots |
 | verl contract | 14 | Core/adapter value and gradient equivalence, microbatch and DP reduction, runtime restrictions, real source fingerprints/AST, patch application and Hydra composition |
-| **Total** | **92** | **Zero skipped** |
+| **Total** | **95** | **Zero skipped** |
 
 The full source checks used a pristine checkout of `XiaomiMiMo/verl` at `79090e58195e80a9cfe251c95ae7a78a2132b6e2`. Patch application occurred in a disposable copy. Hydra composition resolved the actual pinned upstream YAML tree. These checks substantiate a specific interface and reduction contract; they do not execute Ray workers, FSDP collectives or GPU kernels.
 
@@ -49,22 +49,37 @@ The first five profiles each perform 100 consumed RL updates. The staged profile
 
 | Profile | Final correct-first-token probability | Final greedy completion accuracy | Maximum admitted token lag |
 |---|---:|---:|---:|
-| Strict synchronous binary | 96.0873% | 100.0000% | 0 |
-| Bounded asynchronous binary | 84.6315% | 100.0000% | 1 |
-| GAR | 98.2716% | 100.0000% | 0 |
-| GRS with effort cost | 97.6329% | 100.0000% | 0 |
-| Calibrated scalar | 95.2015% | 100.0000% | 0 |
-| SFT → RL → OPD | 72.4691% | 93.7500% | 0 |
+| Strict synchronous binary | 89.3037% | 96.8750% | 0 |
+| Bounded asynchronous binary | 80.7276% | 100.0000% | 1 |
+| GAR | 74.6152% | 75.0000% | 0 |
+| GRS with effort cost | 98.4712% | 100.0000% | 0 |
+| Calibrated scalar | 85.5694% | 87.5000% | 0 |
+| SFT → RL → OPD | 77.9908% | 100.0000% | 0 |
+
+### Seed spread
+
+A single seed is not a reliable summary of a profile. Seed 7 is the worst of eight seeds for GAR, for example, while an earlier implementation's seed-7 GAR run reached 98%. `fusionrl sweep` repeats a profile and reports the spread; the table below uses seeds 1–8 (mean ± sample standard deviation, with the minimum). The raw reports are in `examples/validation/sweeps/`.
+
+| Profile | Correct-first-token probability | Greedy completion accuracy |
+|---|---:|---:|
+| Strict synchronous binary | 94.4 ± 4.7% (min 86.3%) | 98.0 ± 4.4% (min 87.5%) |
+| Bounded asynchronous binary | 83.0 ± 2.9% (min 78.6%) | 100.0 ± 0.0% (min 100.0%) |
+| GAR | 93.9 ± 8.2% (min 74.6%) | 96.9 ± 8.8% (min 75.0%) |
+| GRS with effort cost | 96.8 ± 4.5% (min 85.7%) | 98.4 ± 4.4% (min 87.5%) |
+| Calibrated scalar | 91.7 ± 5.9% (min 85.6%) | 94.5 ± 6.0% (min 87.5%) |
+| SFT → RL → OPD | 81.6 ± 6.6% (min 67.8%) | 98.0 ± 4.4% (min 87.5%) |
+
+Batched rollout changed the order of random draws, not the sampling law. Under the previous one-request-at-a-time sampler the same eight-seed sweep gave 95.7 ± 4.0% (strict synchronous) and 93.2 ± 10.2% (GAR) correct-first-token probability, consistent with the table above. Exact run values also depend on the PyTorch build: the recorded runs reproduce bit-for-bit under 2.6.0+cpu but not under later releases.
 
 The bounded-asynchronous run is a deterministic delayed-queue simulation. It records the old policy's actual sampling probabilities and versions, exercises admission of delayed groups, and cancels four pending groups at the final stage boundary. Its configured lag ceiling is two versions; the observed admitted maximum is one. It does not run rollout and optimization concurrently on separate hardware.
 
-The staged run's correct-first-token probability progresses from 7.0664% initially to 14.8912% after SFT, 66.9298% after RL and 72.4691% after OPD. Its teacher is a transparent synthetic oracle with an identical tokenizer mapping. The included OPD loss trace uses newly sampled student prefixes, so it need not decrease monotonically from step to step.
+The staged run's correct-first-token probability progresses from 7.0664% initially to 14.8912% after SFT, 73.4671% after RL and 77.9908% after OPD. Its teacher is a transparent synthetic oracle with an identical tokenizer mapping. The included OPD loss trace uses newly sampled student prefixes, so it need not decrease monotonically from step to step.
 
 These profiles test different reward definitions and stage budgets. Their numbers are not controlled comparisons of the methods, and they do not justify ranking GAR, GRS, scalar grading or synchronous scheduling on real tasks. Recorded wall times are local CPU observations with concurrent verification work, not a throughput benchmark.
 
 ### Evidence files
 
-Each profile directory under `examples/validation/` contains:
+Each profile directory under `examples/validation/` contains (the `sweeps/` directory holds one aggregate seed report per profile):
 
 - `config.json`: the resolved configuration used for that run.
 - `summary.json`: environment, seed, stage counts, evaluation measurements and observed policy lag.
@@ -90,6 +105,7 @@ python -m fusionrl train-demo --config configs/gar.json --output runs/gar
 python -m fusionrl train-demo --config configs/grs_effort.json --output runs/grs_effort
 python -m fusionrl train-demo --config configs/scalar.json --output runs/scalar
 python -m fusionrl train-demo --config configs/staged.json --output runs/staged
+python -m fusionrl sweep --config configs/gar.json --seeds 1 2 3 4 5 6 7 8 --output runs/gar_sweep
 ```
 
 Use fresh output directories; completed training evidence is protected against accidental overwrite. The source pin and pristine-check procedure are documented in [verl.md](verl.md). Missing optional dependencies or missing upstream source cause explicit test skips; `--require-source` treats any skip as an incomplete verification run.

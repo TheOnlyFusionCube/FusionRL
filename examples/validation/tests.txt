@@ -1,6 +1,7 @@
 test_defaults_valid (test_config.ConfigurationTests.test_defaults_valid) ... ok
 test_guarded_async_profile (test_config.ConfigurationTests.test_guarded_async_profile) ... ok
 test_incompatible_combinations_rejected (test_config.ConfigurationTests.test_incompatible_combinations_rejected) ... ok
+test_json_types_are_enforced (test_config.ConfigurationTests.test_json_types_are_enforced) ... ok
 test_all_five_schemas_normalize_without_fabricated_fields (test_data.DataTests.test_all_five_schemas_normalize_without_fabricated_fields) ... ok
 test_canonical_jsonl_round_trip_preserves_metadata (test_data.DataTests.test_canonical_jsonl_round_trip_preserves_metadata) ... ok
 test_canonical_private_metadata_must_match_source_envelope (test_data.DataTests.test_canonical_private_metadata_must_match_source_envelope) ... ok
@@ -58,7 +59,9 @@ test_stage_barrier_cancels_old_data_without_permitting_replay (test_scheduler.Gr
 test_strict_rejects_stale_instead_of_masking (test_scheduler.GroupSchedulerTests.test_strict_rejects_stale_instead_of_masking) ... ok
 test_strict_roundtrip_and_exactly_once_consumption (test_scheduler.GroupSchedulerTests.test_strict_roundtrip_and_exactly_once_consumption) ... ok
 test_async_uses_delayed_versions_and_finishes_at_clean_stage (test_training.EndToEndTests.test_async_uses_delayed_versions_and_finishes_at_clean_stage) ... ok
+test_batched_sampling_records_the_drawn_probabilities (test_training.EndToEndTests.test_batched_sampling_records_the_drawn_probabilities) ... ok
 test_recorded_behavior_is_initial_sampler_not_updated_model (test_training.EndToEndTests.test_recorded_behavior_is_initial_sampler_not_updated_model) ... ok
+test_seed_sweep_reports_spread (test_training.EndToEndTests.test_seed_sweep_reports_spread) ... ok
 test_small_configured_grading_stages_execute (test_training.EndToEndTests.test_small_configured_grading_stages_execute) ... ok
 test_assessable_partial_work_is_permitted (test_trajectory.TrajectoryAdmissionTests.test_assessable_partial_work_is_permitted) ... ok
 test_compaction_does_not_recondition_old_tokens (test_trajectory.TrajectoryAdmissionTests.test_compaction_does_not_recondition_old_tokens) ... ok
@@ -92,6 +95,6 @@ test_manifest_has_expected_api_and_exact_hashes (test_verl_contract.PinnedSource
 test_real_hydra_defaults_compose_and_validate (test_verl_contract.PinnedSourceTests.test_real_hydra_defaults_compose_and_validate) ... ok
 
 ----------------------------------------------------------------------
-Ran 92 tests in 2.513s
+Ran 95 tests in 3.055s
 
 OK

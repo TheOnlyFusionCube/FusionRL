@@ -1,13 +1,13 @@
 {
-  "tests_run": 92,
+  "tests_run": 95,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "passed": 92,
+  "passed": 95,
   "successful": true,
   "source_checkout_supplied": true,
-  "python": "3.12.14",
-  "elapsed_seconds": 3.715530858999955,
+  "python": "3.13.16",
+  "elapsed_seconds": 4.699167318000036,
   "tests": [
     {
       "test": "test_config.ConfigurationTests.test_defaults_valid",
@@ -19,6 +19,10 @@
     },
     {
       "test": "test_config.ConfigurationTests.test_incompatible_combinations_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_config.ConfigurationTests.test_json_types_are_enforced",
       "status": "passed"
     },
     {
@@ -250,7 +254,15 @@
       "status": "passed"
     },
     {
+      "test": "test_training.EndToEndTests.test_batched_sampling_records_the_drawn_probabilities",
+      "status": "passed"
+    },
+    {
       "test": "test_training.EndToEndTests.test_recorded_behavior_is_initial_sampler_not_updated_model",
+      "status": "passed"
+    },
+    {
+      "test": "test_training.EndToEndTests.test_seed_sweep_reports_spread",
       "status": "passed"
     },
     {
@@ -378,8 +390,8 @@
       "status": "passed"
     }
   ],
-  "numpy_version": "2.3.5",
+  "numpy_version": "2.5.4",
   "torch_version": "2.6.0+cpu",
   "hydra_version": "1.3.2",
-  "pyarrow_version": "19.0.1"
+  "pyarrow_version": "26.0.0"
 }

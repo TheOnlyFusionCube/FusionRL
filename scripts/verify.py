@@ -37,6 +37,14 @@ class Results(unittest.TextTestResult):
         self.records.append({"test":test.id(),"status":"error"})
         super().addError(test,error)
 
+    def addSubTest(self,test,subtest,error):
+        # A failing subTest bypasses addFailure/addError and its parent test
+        # never reaches addSuccess, so record it here or it would vanish.
+        if error is not None:
+            status="failed" if issubclass(error[0],test.failureException) else "error"
+            self.records.append({"test":subtest.id(),"status":status})
+        super().addSubTest(test,subtest,error)
+
 
 def main():
     parser=argparse.ArgumentParser()

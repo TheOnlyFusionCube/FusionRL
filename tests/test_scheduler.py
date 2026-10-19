@@ -1,5 +1,4 @@
 import unittest
-from dataclasses import replace
 
 from fusionrl.scheduler import (
     CacheIdentity, ChunkScheduler, ElasticState, FusionScheduler, GroupSpec,
@@ -49,6 +48,16 @@ class GroupSchedulerTests(unittest.TestCase):
         with self.assertRaises(PolicyVersionMismatch):
             scheduler.complete(finished_group(ticket, token_version=1))
         self.assertEqual(scheduler.ready_count, 0)
+        # The rejected slot is quarantined, cannot be resubmitted, and can be
+        # retried in place so later updates are not blocked forever.
+        self.assertIn("g0", scheduler.quarantined_groups)
+        with self.assertRaises(ValueError):
+            scheduler.complete(finished_group(ticket, token_version=2))
+        with self.assertRaises(QuarantinedGroup):
+            scheduler.begin_update()
+        retry = scheduler.replace_quarantined("g0", "g0-retry")
+        scheduler.complete(finished_group(retry, token_version=2))
+        self.assertEqual(scheduler.begin_update()[0].group_id, "g0-retry")
 
     def test_async_preserves_boundary_quota_and_masks_actual_token_lag(self):
         cfg = SchedulerConfig(mode="bounded_async", executions_per_group=2, burst_steps=2,

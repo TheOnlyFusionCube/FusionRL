@@ -28,6 +28,26 @@ class ConfigurationTests(unittest.TestCase):
             with self.subTest(case=case),self.assertRaises(ValueError):
                 config_from_dict(case)
 
+    def test_json_types_are_enforced(self):
+        cases = [
+            {"train":{"learning_rate":True}},
+            {"train":{"learning_rate":"0.01"}},
+            {"train":{"steps":2.0}},
+            {"reward":{"gar_cap":True}},
+            {"reward":{"effort_levels":"25"}},
+            {"reward":{"effort_levels":[25.0,50]}},
+            {"loss":{"clip_high":"1.01"}},
+            {"policy":{"temperature":True}},
+            {"schedule":{"mode":["strict_sync"]}},
+        ]
+        for case in cases:
+            with self.subTest(case=case),self.assertRaises(ValueError):
+                config_from_dict(case)
+        # Integer literals remain valid for float fields and are stored as floats.
+        config = config_from_dict({"train":{"learning_rate":1},"reward":{"effort_levels":[25,50]}})
+        self.assertIsInstance(config.train.learning_rate, float)
+        self.assertEqual(config.reward.effort_levels, (25, 50))
+
     def test_guarded_async_profile(self):
         config_from_dict({"schedule":{"mode":"bounded_async","max_policy_lag":2,"extra_dispatch_groups":4}})
 

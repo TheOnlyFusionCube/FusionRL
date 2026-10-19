@@ -1,0 +1,236 @@
+{
+  "evidence_scope": "Repeated seeds of the synthetic CPU demo; not a held-out or real-task benchmark",
+  "mode": "strict_sync",
+  "route": "binary",
+  "length_mode": "none",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "aggregate": {
+    "initial": {
+      "first_token_correct_probability": {
+        "mean": 0.07109661214053631,
+        "std": 0.0031463409660663012,
+        "min": 0.06487283855676651,
+        "max": 0.07436473667621613
+      },
+      "greedy_completion_accuracy": {
+        "mean": 0.10546875,
+        "std": 0.04399643603666747,
+        "min": 0.03125,
+        "max": 0.15625
+      }
+    },
+    "after_sft": {
+      "first_token_correct_probability": {
+        "mean": 0.1503986455500126,
+        "std": 0.0025880090767813144,
+        "min": 0.147873193025589,
+        "max": 0.15547609329223633
+      },
+      "greedy_completion_accuracy": {
+        "mean": 0.66796875,
+        "std": 0.12153397801643785,
+        "min": 0.46875,
+        "max": 0.8125
+      }
+    },
+    "after_rl": {
+      "first_token_correct_probability": {
+        "mean": 0.7752532362937927,
+        "std": 0.07240317145484228,
+        "min": 0.6279181241989136,
+        "max": 0.8470121622085571
+      },
+      "greedy_completion_accuracy": {
+        "mean": 0.94140625,
+        "std": 0.08907620508587015,
+        "min": 0.75,
+        "max": 1.0
+      }
+    },
+    "final": {
+      "first_token_correct_probability": {
+        "mean": 0.8161778077483177,
+        "std": 0.06594290156260418,
+        "min": 0.6783285737037659,
+        "max": 0.8865054249763489
+      },
+      "greedy_completion_accuracy": {
+        "mean": 0.98046875,
+        "std": 0.04399643603666747,
+        "min": 0.875,
+        "max": 1.0
+      }
+    }
+  },
+  "runs": [
+    {
+      "seed": 1,
+      "initial": {
+        "first_token_correct_probability": 0.07066167891025543,
+        "greedy_completion_accuracy": 0.125
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.14945057034492493,
+        "greedy_completion_accuracy": 0.59375
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.8470121622085571,
+        "greedy_completion_accuracy": 1.0
+      },
+      "final": {
+        "first_token_correct_probability": 0.8865054249763489,
+        "greedy_completion_accuracy": 1.0
+      },
+      "observed_max_admitted_token_lag": 0
+    },
+    {
+      "seed": 2,
+      "initial": {
+        "first_token_correct_probability": 0.07322278618812561,
+        "greedy_completion_accuracy": 0.15625
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.147873193025589,
+        "greedy_completion_accuracy": 0.53125
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.7556027173995972,
+        "greedy_completion_accuracy": 1.0
+      },
+      "final": {
+        "first_token_correct_probability": 0.8118295073509216,
+        "greedy_completion_accuracy": 1.0
+      },
+      "observed_max_admitted_token_lag": 0
+    },
+    {
+      "seed": 3,
+      "initial": {
+        "first_token_correct_probability": 0.07372491806745529,
+        "greedy_completion_accuracy": 0.125
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.15279333293437958,
+        "greedy_completion_accuracy": 0.71875
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.8361437916755676,
+        "greedy_completion_accuracy": 0.875
+      },
+      "final": {
+        "first_token_correct_probability": 0.8508687019348145,
+        "greedy_completion_accuracy": 0.875
+      },
+      "observed_max_admitted_token_lag": 0
+    },
+    {
+      "seed": 4,
+      "initial": {
+        "first_token_correct_probability": 0.072585828602314,
+        "greedy_completion_accuracy": 0.09375
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.15547609329223633,
+        "greedy_completion_accuracy": 0.75
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.8114287853240967,
+        "greedy_completion_accuracy": 0.9375
+      },
+      "final": {
+        "first_token_correct_probability": 0.843609631061554,
+        "greedy_completion_accuracy": 1.0
+      },
+      "observed_max_admitted_token_lag": 0
+    },
+    {
+      "seed": 5,
+      "initial": {
+        "first_token_correct_probability": 0.0686764344573021,
+        "greedy_completion_accuracy": 0.15625
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.14894317090511322,
+        "greedy_completion_accuracy": 0.46875
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.7626971006393433,
+        "greedy_completion_accuracy": 1.0
+      },
+      "final": {
+        "first_token_correct_probability": 0.8064627647399902,
+        "greedy_completion_accuracy": 1.0
+      },
+      "observed_max_admitted_token_lag": 0
+    },
+    {
+      "seed": 6,
+      "initial": {
+        "first_token_correct_probability": 0.06487283855676651,
+        "greedy_completion_accuracy": 0.03125
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.15113647282123566,
+        "greedy_completion_accuracy": 0.75
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.8265517950057983,
+        "greedy_completion_accuracy": 1.0
+      },
+      "final": {
+        "first_token_correct_probability": 0.8719102144241333,
+        "greedy_completion_accuracy": 1.0
+      },
+      "observed_max_admitted_token_lag": 0
+    },
+    {
+      "seed": 7,
+      "initial": {
+        "first_token_correct_probability": 0.07066367566585541,
+        "greedy_completion_accuracy": 0.09375
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.1489124894142151,
+        "greedy_completion_accuracy": 0.8125
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.734671413898468,
+        "greedy_completion_accuracy": 0.96875
+      },
+      "final": {
+        "first_token_correct_probability": 0.7799076437950134,
+        "greedy_completion_accuracy": 1.0
+      },
+      "observed_max_admitted_token_lag": 0
+    },
+    {
+      "seed": 8,
+      "initial": {
+        "first_token_correct_probability": 0.07436473667621613,
+        "greedy_completion_accuracy": 0.0625
+      },
+      "after_sft": {
+        "first_token_correct_probability": 0.14860384166240692,
+        "greedy_completion_accuracy": 0.71875
+      },
+      "after_rl": {
+        "first_token_correct_probability": 0.6279181241989136,
+        "greedy_completion_accuracy": 0.75
+      },
+      "final": {
+        "first_token_correct_probability": 0.6783285737037659,
+        "greedy_completion_accuracy": 0.96875
+      },
+      "observed_max_admitted_token_lag": 0
+    }
+  ]
+}

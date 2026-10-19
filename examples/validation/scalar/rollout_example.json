@@ -74,21 +74,25 @@
               11
             ],
             "output_token_ids": [
+              11,
               10,
               8,
               1
             ],
             "behavior_log_probs": [
-              -2.4653916358947754,
-              -2.5101559162139893,
-              -2.732325792312622
+              -2.9110116958618164,
+              -2.3563108444213867,
+              -2.4887683391571045,
+              -2.7285890579223633
             ],
             "policy_versions": [
+              0,
               0,
               0,
               0
             ],
             "provenance": [
+              "policy",
               "policy",
               "policy",
               "policy"
@@ -111,7 +115,7 @@
         "assessment": {
           "score": 0.0,
           "valid": true,
-          "artifact_id": "1e8584f92db8c4a867b91f9932834345b59cec5f8cb73b82e4876e36617bb2e7",
+          "artifact_id": "4a86186e2cd67d376d5ac8604aa5c7b016c57f2e7bc505b857203b6bc678c3b7",
           "reason": ""
         },
         "status": "completed",
@@ -130,26 +134,18 @@
               11
             ],
             "output_token_ids": [
-              12,
-              12,
               10,
               2
             ],
             "behavior_log_probs": [
-              -2.3817672729492188,
-              -2.4323627948760986,
-              -2.4657270908355713,
-              -2.8123743534088135
+              -2.4653916358947754,
+              -2.7996420860290527
             ],
             "policy_versions": [
-              0,
-              0,
               0,
               0
             ],
             "provenance": [
-              "policy",
-              "policy",
               "policy",
               "policy"
             ],
@@ -171,7 +167,7 @@
         "assessment": {
           "score": 0.0,
           "valid": true,
-          "artifact_id": "631c478f8167edf55189dc6b91bc0ddbfe58131642ab08cdc691230aacbcf65a",
+          "artifact_id": "37433d2cb81e33009e33ca59861c026aeaa2d169d99cceb82fabc558be66317a",
           "reason": ""
         },
         "status": "completed",
@@ -183,6 +179,54 @@
         "events": [
           {
             "event_id": "g000000:e3:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              5
+            ],
+            "behavior_log_probs": [
+              -2.6785638332366943
+            ],
+            "policy_versions": [
+              0
+            ],
+            "provenance": [
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e3:main",
+            "event_ids": [
+              "g000000:e3:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 1.0,
+          "valid": true,
+          "artifact_id": "0658ffdb97bb10968f7297b5c498ddde357982086cd0873e02484823464ea849",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "129c067653d6bd8e50deb7a9da2c53a8f668f31c6b67fa9eb97798f037282b26"
+      },
+      {
+        "execution_id": "g000000:e4",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e4:request0",
             "input_token_ids": [
               8,
               5,
@@ -208,54 +252,6 @@
         ],
         "paths": [
           {
-            "path_id": "g000000:e3:main",
-            "event_ids": [
-              "g000000:e3:request0"
-            ],
-            "role": "main",
-            "branch_id": "main"
-          }
-        ],
-        "assessment": {
-          "score": 0.0,
-          "valid": true,
-          "artifact_id": "a20b3bdbe32123bd7089ac5664f05328dad0ef90d56f9cfd3486b1b7b650762c",
-          "reason": ""
-        },
-        "status": "completed",
-        "conditioning_key": "129c067653d6bd8e50deb7a9da2c53a8f668f31c6b67fa9eb97798f037282b26"
-      },
-      {
-        "execution_id": "g000000:e4",
-        "group_id": "g000000",
-        "events": [
-          {
-            "event_id": "g000000:e4:request0",
-            "input_token_ids": [
-              8,
-              5,
-              9,
-              11
-            ],
-            "output_token_ids": [
-              3
-            ],
-            "behavior_log_probs": [
-              -2.5316929817199707
-            ],
-            "policy_versions": [
-              0
-            ],
-            "provenance": [
-              "policy"
-            ],
-            "role": "main",
-            "branch_id": "main",
-            "actor_id": "policy"
-          }
-        ],
-        "paths": [
-          {
             "path_id": "g000000:e4:main",
             "event_ids": [
               "g000000:e4:request0"
@@ -267,7 +263,7 @@
         "assessment": {
           "score": 0.0,
           "valid": true,
-          "artifact_id": "48a57cda03164b2f5372bbf94d3dfbd6c748636f76e7f09cee974abb13146865",
+          "artifact_id": "a20b3bdbe32123bd7089ac5664f05328dad0ef90d56f9cfd3486b1b7b650762c",
           "reason": ""
         },
         "status": "completed",
@@ -286,27 +282,15 @@
               11
             ],
             "output_token_ids": [
-              10,
-              8,
-              8,
-              7
+              1
             ],
             "behavior_log_probs": [
-              -2.4653916358947754,
-              -2.5101559162139893,
-              -2.395047426223755,
-              -2.7231950759887695
+              -2.6004951000213623
             ],
             "policy_versions": [
-              0,
-              0,
-              0,
               0
             ],
             "provenance": [
-              "policy",
-              "policy",
-              "policy",
               "policy"
             ],
             "role": "main",
@@ -327,7 +311,7 @@
         "assessment": {
           "score": 0.0,
           "valid": true,
-          "artifact_id": "46132ebb251951a337b0841b77be10a2228bcff5a8e76993ad1bf13b3eda7aa9",
+          "artifact_id": "a20b3bdbe32123bd7089ac5664f05328dad0ef90d56f9cfd3486b1b7b650762c",
           "reason": ""
         },
         "status": "completed",
@@ -346,14 +330,14 @@
               11
             ],
             "output_token_ids": [
+              11,
               9,
-              10,
-              3
+              2
             ],
             "behavior_log_probs": [
-              -2.594295024871826,
-              -2.4886419773101807,
-              -2.6127889156341553
+              -2.9110116958618164,
+              -2.6335887908935547,
+              -2.6460514068603516
             ],
             "policy_versions": [
               0,
@@ -383,7 +367,7 @@
         "assessment": {
           "score": 0.0,
           "valid": true,
-          "artifact_id": "e65b24d0615e7d572957ab9b163b7a2cfe8d33fac00293d301a9cdb0051a26e6",
+          "artifact_id": "4b0f17ee5396791ca367b9c4877468eb7159c1437f13d4b21b5ec3e896a6660c",
           "reason": ""
         },
         "status": "completed",
@@ -402,12 +386,12 @@
               11
             ],
             "output_token_ids": [
-              12,
-              3
+              10,
+              4
             ],
             "behavior_log_probs": [
-              -2.3817672729492188,
-              -2.6092615127563477
+              -2.4653916358947754,
+              -2.3817877769470215
             ],
             "policy_versions": [
               0,
@@ -435,7 +419,7 @@
         "assessment": {
           "score": 0.0,
           "valid": true,
-          "artifact_id": "d4c76d06d96b2d2f8b6641dfec582bba5944762f1f6e29715db9805ca2ba4bf3",
+          "artifact_id": "a92d0367e471a17733daaf874c66a300014f35401ea843825867a2812a079ca0",
           "reason": ""
         },
         "status": "completed",

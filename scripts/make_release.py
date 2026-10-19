@@ -9,7 +9,7 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 IGNORED={"__pycache__",".git",".venv",".pytest_cache","build","dist","runs","external"}
-RELEASE_DIRS={"fusionrl","configs","docs","examples","patches","scripts","tests"}
+RELEASE_DIRS={".github","fusionrl","configs","docs","examples","patches","scripts","tests"}
 RELEASE_FILES={".gitignore","LICENSE","NOTICE","README.md","SOURCES.md","sources.json",
                "pyproject.toml","requirements-cpu.txt"}
 

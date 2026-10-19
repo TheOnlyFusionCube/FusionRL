@@ -15,6 +15,7 @@ from typing import Any
 
 import numpy as np
 
+from . import __version__
 from .config import FusionConfig
 from .learner import learner_loss
 from .pipeline import GroupSupervision,prepare_step
@@ -88,14 +89,19 @@ def run_demo(config: FusionConfig, output: str | Path, *, progress: bool = True)
             task_meta[group_id]=meta
             specs.append(GroupSpec(group_id,conditioning_key(meta)))
         tickets=controller.dispatch(specs)
+        # Every replicate of every dispatched group is sampled in one batched
+        # decode from the same frozen weights; each row keeps its own record.
+        prompts={t.group_id:model.prompt(task_meta[t.group_id]["symbol"],task_meta[t.group_id]["effort"]) for t in tickets}
+        requests=[prompts[t.group_id] for t in tickets for _ in range(t.expected_executions)]
+        samples=iter(model.sample_batch(requests,max_tokens=config.train.max_generated_tokens,generator=generator))
         completed=[]
         for ticket in tickets:
             meta=task_meta[ticket.group_id]
-            prompt=model.prompt(meta["symbol"],meta["effort"])
+            prompt=prompts[ticket.group_id]
             executions=[]
             for replicate in range(ticket.expected_executions):
                 execution_id=f"{ticket.group_id}:e{replicate}"
-                tokens,logps=model.sample(prompt,max_tokens=config.train.max_generated_tokens,generator=generator)
+                tokens,logps=next(samples)
                 outcome=float(tokens[-1]==meta["symbol"])
                 event=GenerationEvent(execution_id+":request0",prompt,tokens,logps,
                     tuple(ticket.dispatch_version for _ in tokens),tuple("policy" for _ in tokens))
@@ -175,6 +181,8 @@ def run_demo(config: FusionConfig, output: str | Path, *, progress: bool = True)
         stat.update({"step":step+1,"behavior_lag_max":max(token_lags,default=0),
             "behavior_lag_mean":float(np.mean(token_lags)) if token_lags else 0.,
             "reward_mean":float(np.mean([e.reward for g in admitted for e in g.executions])),
+            "response_tokens_mean":float(np.mean([len(groups[g.group_id].executions[i].events[0].output_token_ids)
+                for g in admitted for i in range(len(g.executions))])),
             "zero_signal_groups":zero_signal,"optimizer_applied":optimizer_applied,
             "gradient_norm":gradient_norm,"masked_stale":sum(e.masked_stale for g in admitted for e in g.executions)})
         controller.commit_update()
@@ -193,9 +201,9 @@ def run_demo(config: FusionConfig, output: str | Path, *, progress: bool = True)
     # Stage boundary: no retained RL trajectory is used for OPD. The simple
     # executable owns no remote workers; pending synthetic groups are discarded.
     discarded_for_stage=controller.pending_count
-    if hasattr(controller,"cancel_pending"):
-        controller.cancel_pending("end_of_rl_stage")
-    del groups,task_meta,controller
+    controller.cancel_pending("end_of_rl_stage")
+    groups.clear()
+    task_meta.clear()
     opd_losses=[]
     if config.train.opd_steps:
         from .distillation import full_vocabulary_reverse_kl
@@ -203,10 +211,9 @@ def run_demo(config: FusionConfig, output: str | Path, *, progress: bool = True)
         for _ in range(config.train.opd_steps):
             contexts=[]
             answers=[]
-            for symbol in range(8):
-                effort=rng.choice(config.reward.effort_levels)
-                prompt=model.prompt(symbol,effort)
-                tokens,_=model.sample(prompt,max_tokens=config.train.max_generated_tokens,generator=generator)
+            stage_prompts=[model.prompt(symbol,rng.choice(config.reward.effort_levels)) for symbol in range(8)]
+            stage_samples=model.sample_batch(stage_prompts,max_tokens=config.train.max_generated_tokens,generator=generator)
+            for symbol,(prompt,(tokens,_)) in enumerate(zip(stage_prompts,stage_samples)):
                 for offset in range(len(tokens)):
                     contexts.append(prompt+tokens[:offset])
                     answers.append(symbol)
@@ -223,7 +230,7 @@ def run_demo(config: FusionConfig, output: str | Path, *, progress: bool = True)
             opd_optimizer.step()
             opd_losses.append(float(loss.detach().item()))
     final=model.evaluate(config.reward.effort_levels,config.train.max_generated_tokens)
-    summary={"implementation":"FusionRL 0.1.0","environment":"synthetic-symbol-copy-v1",
+    summary={"implementation":f"FusionRL {__version__}","environment":"synthetic-symbol-copy-v1",
         "evidence_scope":"CPU causal-policy integration test; no real LLM, MiMo environment, cluster throughput or held-out benchmark claim",
         "mode":config.schedule.mode,"async_execution":"deterministic delayed-queue simulation" if config.schedule.mode=="bounded_async" else "strict synchronous",
         "seed":config.train.seed,"rl_steps":config.train.steps,"sft_steps":config.train.sft_steps,

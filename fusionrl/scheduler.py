@@ -194,7 +194,10 @@ class FusionScheduler:
                 raise PolicyVersionMismatch(group.group_id, "strict synchronous generation changed its frozen policy")
             if any(v > self.published_version for v in policy_versions(group)):
                 raise PolicyVersionMismatch(group.group_id, "rollout claims weights that have not been published")
-        except QuarantinedGroup as error:
+        except (QuarantinedGroup, PolicyVersionMismatch) as error:
+            # A version violation is a terminal, invalid outcome too. Leaving the
+            # slot neither ready nor quarantined would block every later update
+            # and would let a different record be submitted for the same slot.
             self._quarantined[group.group_id] = error.reason
             self.quarantine_history.append((group.group_id, error.reason))
             raise

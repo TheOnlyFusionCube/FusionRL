@@ -17,18 +17,18 @@
     "greedy_completion_accuracy": 0.09375
   },
   "after_rl": {
-    "first_token_correct_probability": 0.9827156066894531,
-    "greedy_completion_accuracy": 1.0
+    "first_token_correct_probability": 0.7461516857147217,
+    "greedy_completion_accuracy": 0.75
   },
   "final": {
-    "first_token_correct_probability": 0.9827156066894531,
-    "greedy_completion_accuracy": 1.0
+    "first_token_correct_probability": 0.7461516857147217,
+    "greedy_completion_accuracy": 0.75
   },
   "observed_max_admitted_token_lag": 0,
   "discarded_pending_groups_at_stage_boundary": 0,
-  "rl_elapsed_seconds": 1.9332919049998054,
+  "rl_elapsed_seconds": 1.1696017680000068,
   "torch_version": "2.6.0+cpu",
-  "numpy_version": "2.3.5",
+  "numpy_version": "2.5.4",
   "parameter_count": 7246,
   "opd_losses": []
 }

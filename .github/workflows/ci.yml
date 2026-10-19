@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+          python -m pip install -e '.[data]' hydra-core==1.3.2 ruff
+      - name: Lint
+        run: ruff check .
+      - name: Fetch the pristine pinned verl source
+        run: |
+          COMMIT=$(python -c "from fusionrl.integrations.verl import UPSTREAM_COMMIT; print(UPSTREAM_COMMIT)")
+          git init -q "$RUNNER_TEMP/verl"
+          git -C "$RUNNER_TEMP/verl" fetch -q --depth 1 https://github.com/XiaomiMiMo/verl "$COMMIT"
+          git -C "$RUNNER_TEMP/verl" checkout -q FETCH_HEAD
+      - name: Tests (no skips allowed)
+        env:
+          FUSIONRL_VERL_SOURCE: ${{ runner.temp }}/verl
+        run: python scripts/verify.py --require-source --output "$RUNNER_TEMP/verification"
+      - name: Demo smoke run
+        run: |
+          python -m fusionrl train-demo --config configs/smoke.json --output "$RUNNER_TEMP/smoke" --quiet
+          python -m fusionrl sweep --config configs/smoke.json --seeds 1 2 --output "$RUNNER_TEMP/sweep" --quiet

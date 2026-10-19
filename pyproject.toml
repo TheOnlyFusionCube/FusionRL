@@ -25,3 +25,12 @@ include = ["fusionrl*"]
 [tool.setuptools.package-data]
 "fusionrl.integrations.verl" = ["source_contract.json", "config/*.yaml"]
 
+
+[tool.ruff]
+target-version = "py310"
+extend-exclude = ["examples"]
+
+[tool.ruff.lint]
+# Correctness-focused rules; the compact house style is intentionally kept.
+select = ["F", "B", "E9"]
+ignore = ["B905"]

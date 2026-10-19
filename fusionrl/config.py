@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field, fields
 import json
 import math
 from pathlib import Path
-from typing import Any
+from typing import Any, get_args, get_origin, get_type_hints
 
 from .objective import ExecutionLossConfig
 
@@ -140,15 +140,43 @@ class FusionConfig:
         return asdict(self)
 
 
+def _check_json_type(owner: str, name: str, expected: Any, value: Any) -> Any:
+    """Reject JSON values whose type differs from the field annotation.
+
+    JSON booleans are not numbers here: ``"learning_rate": true`` would
+    otherwise train at 1.0, and ``"temperature": true`` would pass as 1.
+    """
+    where = f"{owner}.{name}"
+    if expected is bool:
+        if type(value) is not bool:
+            raise ValueError(f"{where} must be a JSON boolean")
+    elif expected is int:
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(f"{where} must be an integer")
+    elif expected is float:
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{where} must be a number")
+        return float(value)
+    elif expected is str:
+        if not isinstance(value, str):
+            raise ValueError(f"{where} must be a string")
+    elif get_origin(expected) is tuple:
+        if not isinstance(value, (list, tuple)):
+            raise ValueError(f"{where} must be a JSON array")
+        item = get_args(expected)[0]
+        return tuple(_check_json_type(owner, f"{name}[{i}]", item, x) for i, x in enumerate(value))
+    return value
+
+
 def _strict_dataclass(cls: Any, data: Any) -> Any:
     if not isinstance(data, dict):
         raise ValueError(f"{cls.__name__} must be a JSON object")
     unknown = set(data) - {x.name for x in fields(cls)}
     if unknown:
         raise ValueError(f"Unknown {cls.__name__} keys: {sorted(unknown)}")
-    if cls is Reward and "effort_levels" in data:
-        data = {**data, "effort_levels": tuple(data["effort_levels"])}
-    return cls(**data)
+    hints = get_type_hints(cls)
+    checked = {key: _check_json_type(cls.__name__, key, hints[key], value) for key, value in data.items()}
+    return cls(**checked)
 
 
 def config_from_dict(data: dict[str, Any]) -> FusionConfig:

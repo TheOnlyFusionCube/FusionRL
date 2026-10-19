@@ -24,7 +24,7 @@ MoE models require a concrete routing implementation: router freezing alone does
 
 ## Failure, recovery and elastic resources
 
-For a quarantined group, retain its logical task/domain slot and regenerate the whole group with a fresh identity. Keep the required old snapshot until retry completion or explicitly cancel it at a published boundary. Do not replace an invalid execution with an unrelated ready sample.
+For a quarantined group, retain its logical task/domain slot and regenerate the whole group with a fresh identity. A completed group whose token versions violate the mode contract (a changed frozen policy in strict sync, or unpublished weights) is quarantined the same way; the controller then refuses another record for that slot and `replace_quarantined` retries it. Keep the required old snapshot until retry completion or explicitly cancel it at a published boundary. Do not replace an invalid execution with an unrelated ready sample.
 
 Persist group tickets, immutable payload references, assessment versions, consumed IDs, publication digests and optimizer state together in a real recovery checkpoint. The tiny model's export intentionally contains no resumable distributed queue. The exact-once guarantees of a live controller do not by themselves survive a process crash without this ledger.
 
