@@ -238,6 +238,28 @@ class EnvironmentAuditTests(unittest.TestCase):
             self.assertEqual({int(p.stat().st_mtime) for p in (out / "testbed").iterdir() if p.is_file()},
                              {1577836800})
 
+    def test_setup_artifacts_are_not_counted_as_solution_leaks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "fs"
+            work = root / "testbed"
+            work.mkdir(parents=True)
+            _git(work, "init", "-q", "-b", "main")
+            (work / "calc.py").write_text("x = 1\n")
+            _git(work, "add", ".")
+            _git(work, "commit", "-qm", "base")  # COMMIT_EDITMSG now repeats HEAD's message.
+            (work / ".venv" / "bin").mkdir(parents=True)
+            (work / ".venv" / "bin" / "black").write_text("#!/bin/sh\n")
+            os.utime(work / "calc.py", (1577836800, 1577836800))
+            os.utime(work / ".venv" / "bin" / "black", (1577840000, 1577840000))
+            report = audit_snapshot(root=root, workspace="/testbed", subject="setup")
+            self.assertTrue(report.passed, [f for f in report.findings if f.severity == "leak"])
+            checks = {f.check for f in report.findings}
+            self.assertIn("timestamp_outliers_derived", checks)
+            self.assertIn("git_commit_editmsg", checks)
+            (work / ".git" / "COMMIT_EDITMSG").write_text("Fix the sign error in add()\n")
+            report = audit_snapshot(root=root, workspace="/testbed", subject="setup")
+            self.assertIn("git_state_files", {f.check for f in report.findings if f.severity == "leak"})
+
     def test_untrusted_git_config_is_never_executed(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "fs"

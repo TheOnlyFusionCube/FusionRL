@@ -32,6 +32,10 @@ AUDIT_VERSION = "fusionrl-env-audit-v1"
 MAX_SCAN_BYTES = 32 * 1024 * 1024
 _PATCH_LEFTOVER = re.compile(r"\.(orig|rej|porig)$|(^|/)(test_patch|gold_patch|reference_(patch|solution)|"
                              r"solution|fix)\.(diff|patch)$", re.IGNORECASE)
+# Installed or generated content: newer timestamps there reflect setup, not the fix.
+_DERIVED = re.compile(r"(^|/)(\.venv|venv|env|node_modules|site-packages|dist-packages|__pycache__|\.tox|"
+                      r"\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist|target|\.gradle|vendor|\.cache)/|"
+                      r"\.egg-info(/|$)|\.pyc$")
 _GRADING_FILES = re.compile(r"(^|/)(mimo_test_command\.sh|run_tests?\.sh|eval(uate)?\.sh|grade(r)?\.py)$")
 # Git state that can carry commit messages or whole patches beyond HEAD.
 _GIT_STATE_FILES = ("ORIG_HEAD", "FETCH_HEAD", "MERGE_HEAD", "CHERRY_PICK_HEAD", "REVERT_HEAD", "REBASE_HEAD",
@@ -183,22 +187,61 @@ def audit_git(git_dir: Path, worktree_blobs: set[str] | frozenset[str] = frozens
     all_objects = {line.split(" ", 1)[0] for line in
                    _git(git_dir, "cat-file", "--batch-all-objects", "--batch-check=%(objectname)").splitlines() if line}
     hidden = all_objects - allowed - (index_blobs & set(worktree_blobs))
+    # Annotated tags are never listed by ``rev-list --objects HEAD``; a tag
+    # (or tag chain) that labels a commit in HEAD's history reveals nothing new.
+    if hidden:
+        kinds = dict(line.split(" ", 1) for line in _git(
+            git_dir, "cat-file", "--batch-check=%(objectname) %(objecttype)",
+            input_text="\n".join(sorted(hidden)) + "\n").splitlines() if " " in line)
+        changed = True
+        while changed:
+            changed = False
+            for object_id in [o for o in hidden if kinds.get(o) == "tag"]:
+                header = _git(git_dir, "cat-file", "-p", object_id, check=False).split("\n", 1)[0].split()
+                if len(header) == 2 and header[0] == "object" and header[1] in allowed:
+                    allowed.add(object_id)
+                    hidden.discard(object_id)
+                    changed = True
     stats["objects_total"] = len(all_objects)
     stats["objects_not_reachable_from_head"] = len(hidden)
     if hidden:
         types = _git(git_dir, "cat-file", "--batch-check=%(objectname) %(objecttype)",
                      input_text="\n".join(sorted(hidden)) + "\n").splitlines()
-        commits = [t.split()[0] for t in types if t.endswith(" commit")]
+        by_type: dict[str, list[str]] = {}
+        for line in types:
+            object_id, _, kind = line.partition(" ")
+            by_type.setdefault(kind, []).append(object_id)
+        commits = by_type.get("commit", [])
         stats["hidden_commits"] = len(commits)
+        stats["hidden_objects_by_type"] = {kind: len(ids) for kind, ids in sorted(by_type.items())}
         findings.append(EnvFinding("git_objects_beyond_head", "leak",
-                                   f"{len(hidden)} git objects ({len(commits)} commits) are not reachable from "
-                                   "HEAD; unreachable or other-branch objects can contain the reference fix",
-                                   tuple(commits[:20])))
+                                   f"{len(hidden)} git objects ({', '.join(f'{len(v)} {k}s' for k, v in sorted(by_type.items()))}) "
+                                   "are not reachable from HEAD; unreachable blobs and commits can contain the reference fix",
+                                   tuple((commits or by_type.get("blob", []))[:20])))
 
     logs = git_dir / "logs"
-    if logs.exists() and any(p.is_file() for p in logs.rglob("*")):
-        findings.append(EnvFinding("git_reflogs", "leak", "reflogs record previous HEAD/branch positions"))
+    if logs.exists():
+        recorded: set[str] = set()
+        for log in (p for p in logs.rglob("*") if p.is_file()):
+            for line in log.read_text(errors="replace").splitlines():
+                recorded.update(part for part in line.split()[:2] if re.fullmatch(r"[0-9a-f]{40,64}", part))
+        recorded.discard("0" * 40)
+        recorded.discard("0" * 64)
+        outside = sorted(sha for sha in recorded if not _git_ok(git_dir, "merge-base", "--is-ancestor", sha, "HEAD"))
+        if outside:
+            findings.append(EnvFinding("git_reflogs", "leak", f"reflogs record {len(outside)} positions outside "
+                                       "HEAD's history", tuple(outside[:20])))
+        elif recorded:
+            findings.append(EnvFinding("git_reflogs_head_only", "warning", "reflogs exist but only record HEAD's history"))
     state = [name for name in _GIT_STATE_FILES if (git_dir / name).exists()]
+    if "COMMIT_EDITMSG" in state:
+        # Harmless when it only repeats HEAD's own message.
+        recorded = (git_dir / "COMMIT_EDITMSG").read_text(errors="replace")
+        own = _git(git_dir, "log", "-1", "--format=%B", "HEAD", check=False)
+        strip = lambda text: [ln for ln in text.strip().splitlines() if not ln.startswith("#")]  # noqa: E731
+        if strip(recorded) == strip(own):
+            state.remove("COMMIT_EDITMSG")
+            findings.append(EnvFinding("git_commit_editmsg", "warning", "COMMIT_EDITMSG repeats HEAD's message"))
     state += [name for name in _GIT_STATE_DIRS[1:] if (git_dir / name).exists()]
     if state:
         findings.append(EnvFinding("git_state_files", "leak", "git state files can hold commits, commit messages "
@@ -288,12 +331,18 @@ def _mtime_findings(entries: Sequence[_Entry], workspace: str, reference_files: 
     stats = {"workspace_files": len(files), "distinct_mtime_buckets": len(buckets),
              "newer_than_bulk": len(newer), "older_than_bulk": len(older)}
     findings = []
-    if newer:
-        rel = [p[len(workspace):].lstrip("/") for p in newer]
-        overlap = sorted(set(rel) & set(reference_files))
-        detail = (f"{len(newer)} workspace files are newer than the bulk checkout; `find -newer*` reveals them"
+    rel = [p[len(workspace):].lstrip("/") for p in newer]
+    source = [r for r in rel if not _DERIVED.search(r)]
+    stats["newer_source_files"] = len(source)
+    if source:
+        overlap = sorted(set(source) & set(reference_files))
+        detail = (f"{len(source)} source files are newer than the bulk checkout; `find -newer*` reveals them"
                   + (f", including {len(overlap)} files touched by the hidden test/reference patch" if overlap else ""))
-        findings.append(EnvFinding("timestamp_outliers", "leak", detail, tuple((overlap or rel)[:50])))
+        findings.append(EnvFinding("timestamp_outliers", "leak", detail, tuple((overlap + source)[:50])))
+    if len(source) < len(rel):
+        findings.append(EnvFinding("timestamp_outliers_derived", "warning",
+                                   f"{len(rel) - len(source)} installed/generated files are newer than the checkout",
+                                   tuple([r for r in rel if _DERIVED.search(r)][:10])))
     if older:
         findings.append(EnvFinding("timestamp_nonuniform", "warning",
                                    f"{len(older)} workspace files are older than the bulk checkout",
