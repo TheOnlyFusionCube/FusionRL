@@ -66,7 +66,9 @@ CHANNELS: tuple[Channel, ...] = (
         (
             r"\bfind\b[^\n|;&]*-(newer\w*|[cma]min|[cma]time)\b",
             r"\bstat\b[^\n|;&]*(%[YZXyzx]|-c\s*['\"]?%[YZyz])",
-            r"st_mtime|st_ctime|getmtime|getctime",
+            # Scanning or sorting many files by time, not ordinary use of mtime in project code.
+            r"(walk|rglob|glob|scandir|listdir|iterdir)\b[^\n]*(st_mtime|st_ctime|getmtime|getctime)",
+            r"sorted\([^\n]*(st_mtime|st_ctime|getmtime|getctime)",
         ),
     ),
     Channel(
