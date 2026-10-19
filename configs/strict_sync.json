@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "schedule": {
+    "mode": "strict_sync", "groups_per_update": 4, "executions_per_group": 8,
+    "burst_steps": 1, "extra_dispatch_groups": 0, "max_pending_groups": 64,
+    "max_policy_lag": 0, "jmax": 5
+  },
+  "reward": {"route": "binary", "length_mode": "none"},
+  "train": {"steps": 100, "learning_rate": 0.01, "seed": 7}
+}
+

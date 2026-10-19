@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "schedule": {"mode": "strict_sync", "groups_per_update": 4, "executions_per_group": 8},
+  "reward": {
+    "route": "grs", "length_mode": "effort", "effort_levels": [25,50,75,100],
+    "effort_k0": 0.2, "effort_tau": 25.0, "effort_length_norm": 4.0,
+    "effort_cap": 0.2
+  },
+  "train": {"steps": 100, "learning_rate": 0.01, "seed": 7}
+}
+

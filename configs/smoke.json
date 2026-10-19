@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "schedule": {"groups_per_update": 2, "executions_per_group": 4},
+  "train": {"steps": 5, "seed": 7, "learning_rate": 0.01}
+}
+

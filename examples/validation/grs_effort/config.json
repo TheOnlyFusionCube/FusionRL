@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "schedule": {
+    "mode": "strict_sync",
+    "groups_per_update": 4,
+    "executions_per_group": 8,
+    "burst_steps": 1,
+    "extra_dispatch_groups": 0,
+    "max_pending_groups": 64,
+    "max_policy_lag": 0,
+    "jmax": 5,
+    "dispatch_policy": "boundary",
+    "sample_reuse": false
+  },
+  "reward": {
+    "route": "grs",
+    "length_mode": "effort",
+    "gar_cap": 2.0,
+    "effort_levels": [
+      25,
+      50,
+      75,
+      100
+    ],
+    "effort_k0": 0.2,
+    "effort_tau": 25.0,
+    "effort_length_norm": 4.0,
+    "effort_cap": 0.2,
+    "length_min_pass_rate": 0.5,
+    "length_percentile": 50.0,
+    "length_max_deduction": 0.2,
+    "length_tolerance": 0.0,
+    "length_saturation": 2.0,
+    "length_exponent": 1.0
+  },
+  "loss": {
+    "clip_low": 0.995,
+    "clip_high": 1.005,
+    "token_is_cap": 5.0,
+    "token_loss_cap": 100.0
+  },
+  "train": {
+    "steps": 100,
+    "learning_rate": 0.01,
+    "seed": 7,
+    "max_generated_tokens": 4,
+    "sft_steps": 0,
+    "opd_steps": 0,
+    "gradient_clip": 1.0
+  },
+  "policy": {
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "top_k": -1,
+    "cache_policy": "invalidate_on_version_change",
+    "model_kind": "dense",
+    "freeze_moe_router": false,
+    "recorded_routing_replay": false
+  }
+}

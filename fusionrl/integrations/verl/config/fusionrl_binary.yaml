@@ -1,0 +1,108 @@
+hydra:
+  searchpath:
+    - pkg://verl.trainer.config
+
+defaults:
+  - ppo_trainer
+  - _self_
+
+# These modest lengths are a starting configuration, not a measured GPU recipe.
+actor_rollout_ref:
+  model:
+    path: ???
+    trust_remote_code: false
+    use_remove_padding: true
+  actor:
+    strategy: fsdp2
+    ppo_mini_batch_size: 4
+    ppo_micro_batch_size_per_gpu: 1
+    use_dynamic_bsz: true
+    ppo_max_token_len_per_gpu: 8192
+    ppo_epochs: 1
+    entropy_coeff: 0.0
+    use_kl_loss: false
+    loss_agg_mode: seq-mean-token-mean
+    loss_scale_factor: null
+    policy_loss:
+      loss_mode: fusionrl_execution
+    optim:
+      lr: 1.0e-6
+  ref:
+    strategy: fsdp2
+  rollout:
+    name: vllm
+    mode: async
+    nnodes: 0
+    n: 4
+    temperature: 1.0
+    top_p: 1.0
+    top_k: -1
+    do_sample: true
+    calculate_log_probs: true
+    logprobs_mode: processed_logprobs
+    tensor_model_parallel_size: 1
+    load_format: auto
+    log_prob_micro_batch_size_per_gpu: 1
+    log_prob_max_token_len_per_gpu: 8192
+    max_model_len: 4096
+    gpu_memory_utilization: 0.4
+    over_sample_rate: 0
+    multi_turn:
+      enable: false
+    agent:
+      default_agent_loop: single_turn_agent
+      num_workers: 2
+
+data:
+  train_files: ???
+  val_files: ???
+  train_batch_size: 4
+  max_prompt_length: 2048
+  max_response_length: 2048
+  return_raw_chat: true
+  truncation: error
+  filter_overlong_prompts: false
+
+algorithm:
+  adv_estimator: fusionrl_binary
+  norm_adv_by_std_in_grpo: false
+  use_kl_in_reward: false
+  filter_groups:
+    enable: false
+  rollout_correction:
+    bypass_mode: false
+    rollout_is: null
+    rollout_rs: null
+
+critic:
+  enable: false
+
+distillation:
+  enabled: false
+
+reward:
+  custom_reward_function:
+    path: ???
+    name: compute_score
+
+trainer:
+  use_v1: true
+  nnodes: 1
+  n_gpus_per_node: 1
+  total_training_steps: 10
+  total_epochs: 1
+  project_name: FusionRL
+  experiment_name: binary_verl_contract
+  logger: [console]
+  val_before_train: false
+  test_freq: -1
+  save_freq: 5
+  v1:
+    trainer_mode: sync
+    sampler:
+      max_off_policy_threshold: 1
+      sync_refill_failed_groups: false
+
+transfer_queue:
+  enable: true
+

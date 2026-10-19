@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "inspected_date": "2026-10-19",
+  "sources": [
+    {
+      "id": "DS41",
+      "requested_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/DeepSeek_V41_Tech_Report.pdf",
+      "download_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/resolve/main/DeepSeek_V41_Tech_Report.pdf",
+      "equivalent_html": "https://arxiv.org/html/2609.19969v1",
+      "sha256": "ba68e2e40408125ae6d2f63a9a241b61c73910691c74ec1a2a7023c851eac08d",
+      "size_bytes": 1809802,
+      "sections": ["5.1", "5.1.4", "5.2"],
+      "redistributed": false
+    },
+    {
+      "id": "MIMO",
+      "requested_url": "https://arxiv.org/html/2610.11959v1",
+      "revision": "2610.11959v1",
+      "sections": ["4.3", "5.1", "5.4", "6", "7"],
+      "redistributed": false
+    },
+    {
+      "id": "DATA",
+      "requested_url": "https://huggingface.co/datasets/XiaomiMiMo/MiMo-V2.6-RL-oss",
+      "repo_id": "XiaomiMiMo/MiMo-V2.6-RL-oss",
+      "revision": "971cab2ab421fd88db29770db0d0e52014b63615",
+      "declared_license": "apache-2.0",
+      "subset_rows": {"code": 2602, "cyber": 1000, "general": 989, "webdev": 2093, "music": 1000},
+      "redistributed": false
+    },
+    {
+      "id": "VERL",
+      "requested_url": "https://github.com/XiaomiMiMo/verl",
+      "branch_inspected": "mimo-oss",
+      "revision": "79090e58195e80a9cfe251c95ae7a78a2132b6e2",
+      "source_contract": "fusionrl/integrations/verl/source_contract.json",
+      "patch": "patches/verl-fusionrl-strict-sync.patch",
+      "declared_license": "Apache-2.0",
+      "submodules": {
+        "third_party/mimoagent-osr": "c3df8469f250b15e7906487a6d52be4c1827a509",
+        "third_party/uni_agent": "c63e0b01c375ebede95e01fe92bc367df24e5bf3"
+      },
+      "redistribution": "small source-context patch only"
+    },
+    {
+      "id": "SEER",
+      "requested_url": "https://arxiv.org/pdf/2511.14617",
+      "resolved_url": "https://arxiv.org/pdf/2511.14617v3",
+      "revision": "2511.14617v3",
+      "sections": ["3.2", "3.3", "3.4", "A.1"],
+      "redistributed": false
+    },
+    {
+      "id": "GYRE",
+      "requested_url": "https://arxiv.org/html/2609.33848v1",
+      "revision": "2609.33848v1",
+      "sections": ["4", "5", "A", "B"],
+      "redistributed": false
+    }
+  ],
+  "evidence_scope": "source-verified design; tested CPU reference and pinned API/configuration contracts; no distributed GPU or real agent-environment benchmark"
+}
+

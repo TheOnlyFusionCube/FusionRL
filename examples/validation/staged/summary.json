@@ -1,0 +1,40 @@
+{
+  "implementation": "FusionRL 0.1.0",
+  "environment": "synthetic-symbol-copy-v1",
+  "evidence_scope": "CPU causal-policy integration test; no real LLM, MiMo environment, cluster throughput or held-out benchmark claim",
+  "mode": "strict_sync",
+  "async_execution": "strict synchronous",
+  "seed": 7,
+  "rl_steps": 40,
+  "sft_steps": 5,
+  "opd_steps": 5,
+  "initial": {
+    "first_token_correct_probability": 0.07066367566585541,
+    "greedy_completion_accuracy": 0.09375
+  },
+  "after_sft": {
+    "first_token_correct_probability": 0.1489124894142151,
+    "greedy_completion_accuracy": 0.8125
+  },
+  "after_rl": {
+    "first_token_correct_probability": 0.6692984700202942,
+    "greedy_completion_accuracy": 0.875
+  },
+  "final": {
+    "first_token_correct_probability": 0.7246912717819214,
+    "greedy_completion_accuracy": 0.9375
+  },
+  "observed_max_admitted_token_lag": 0,
+  "discarded_pending_groups_at_stage_boundary": 0,
+  "rl_elapsed_seconds": 0.7583068619996993,
+  "torch_version": "2.6.0+cpu",
+  "numpy_version": "2.3.5",
+  "parameter_count": 7246,
+  "opd_losses": [
+    0.9593487977981567,
+    0.8923652172088623,
+    0.7252572774887085,
+    0.8405042290687561,
+    0.955572247505188
+  ]
+}

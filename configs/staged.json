@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "schedule": {"mode": "strict_sync", "groups_per_update": 4, "executions_per_group": 8},
+  "reward": {"route": "binary", "length_mode": "none"},
+  "train": {"steps": 40, "sft_steps": 5, "opd_steps": 5, "seed": 7, "learning_rate": 0.01}
+}
+

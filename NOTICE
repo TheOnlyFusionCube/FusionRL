@@ -1,0 +1,14 @@
+FusionRL 0.1.0
+
+FusionRL is an independent research synthesis prepared on 2026-10-19.
+The original FusionRL implementation is distributed under Apache-2.0.
+The small XiaomiMiMo/verl patch modifies an Apache-2.0 upstream project.
+Original upstream copyright notices are retained in that project and patch.
+
+Source research is credited in SOURCES.md and sources.json. Referencing a
+paper's method does not imply affiliation with, endorsement by, or reproduction
+of DeepSeek, Xiaomi, Moonshot AI, Tsinghua University, or the Qwen team.
+The cited source reports, source datasets, pretrained model weights, task images,
+and external repositories retain their own terms. They are fetched separately
+by the supplied instructions and are not relicensed by this notice.
+

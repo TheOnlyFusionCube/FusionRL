@@ -1,0 +1,413 @@
+{
+  "schema": "fusionrl-rollout-group-v1",
+  "task": {
+    "task": "synthetic-symbol-copy-v1",
+    "symbol": 5,
+    "effort": 50,
+    "harness": "in-process-pure-symbol-v1",
+    "environment": "symbol-v1",
+    "rubric": "format-v1",
+    "reward_route": "binary",
+    "config_epoch": 0
+  },
+  "group": {
+    "group_id": "g000000",
+    "executions": [
+      {
+        "execution_id": "g000000:e0",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e0:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              7
+            ],
+            "behavior_log_probs": [
+              -2.3252766132354736
+            ],
+            "policy_versions": [
+              0
+            ],
+            "provenance": [
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e0:main",
+            "event_ids": [
+              "g000000:e0:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "ac8ee36d5900994ea5d0851b69e74e7770c99833be36c41565854f30426fecee",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      },
+      {
+        "execution_id": "g000000:e1",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e1:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              10,
+              0
+            ],
+            "behavior_log_probs": [
+              -3.5371737480163574,
+              -2.470738410949707
+            ],
+            "policy_versions": [
+              0,
+              0
+            ],
+            "provenance": [
+              "policy",
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e1:main",
+            "event_ids": [
+              "g000000:e1:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "6637bfb486102b87c3b94df37540e4fbc050e3491885a7f2e4033abf52aef9da",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      },
+      {
+        "execution_id": "g000000:e2",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e2:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              1
+            ],
+            "behavior_log_probs": [
+              -2.00961971282959
+            ],
+            "policy_versions": [
+              0
+            ],
+            "provenance": [
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e2:main",
+            "event_ids": [
+              "g000000:e2:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "a20b3bdbe32123bd7089ac5664f05328dad0ef90d56f9cfd3486b1b7b650762c",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      },
+      {
+        "execution_id": "g000000:e3",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e3:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              4
+            ],
+            "behavior_log_probs": [
+              -2.1074814796447754
+            ],
+            "policy_versions": [
+              0
+            ],
+            "provenance": [
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e3:main",
+            "event_ids": [
+              "g000000:e3:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "5b39741f679c1a1a6df477581b3c1c70a96d3cf6502983a11b66b8f41ea0b595",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      },
+      {
+        "execution_id": "g000000:e4",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e4:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              2
+            ],
+            "behavior_log_probs": [
+              -2.588979959487915
+            ],
+            "policy_versions": [
+              0
+            ],
+            "provenance": [
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e4:main",
+            "event_ids": [
+              "g000000:e4:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "d7ba7fef8c1045c57bdbcb9560a655b824b5b2b16dc8ae5db5d7dbf449a20ded",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      },
+      {
+        "execution_id": "g000000:e5",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e5:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              10,
+              2
+            ],
+            "behavior_log_probs": [
+              -3.5371737480163574,
+              -2.7217507362365723
+            ],
+            "policy_versions": [
+              0,
+              0
+            ],
+            "provenance": [
+              "policy",
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e5:main",
+            "event_ids": [
+              "g000000:e5:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "37433d2cb81e33009e33ca59861c026aeaa2d169d99cceb82fabc558be66317a",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      },
+      {
+        "execution_id": "g000000:e6",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e6:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              1
+            ],
+            "behavior_log_probs": [
+              -2.00961971282959
+            ],
+            "policy_versions": [
+              0
+            ],
+            "provenance": [
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e6:main",
+            "event_ids": [
+              "g000000:e6:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "a20b3bdbe32123bd7089ac5664f05328dad0ef90d56f9cfd3486b1b7b650762c",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      },
+      {
+        "execution_id": "g000000:e7",
+        "group_id": "g000000",
+        "events": [
+          {
+            "event_id": "g000000:e7:request0",
+            "input_token_ids": [
+              8,
+              5,
+              9,
+              11
+            ],
+            "output_token_ids": [
+              3
+            ],
+            "behavior_log_probs": [
+              -2.4543356895446777
+            ],
+            "policy_versions": [
+              0
+            ],
+            "provenance": [
+              "policy"
+            ],
+            "role": "main",
+            "branch_id": "main",
+            "actor_id": "policy"
+          }
+        ],
+        "paths": [
+          {
+            "path_id": "g000000:e7:main",
+            "event_ids": [
+              "g000000:e7:request0"
+            ],
+            "role": "main",
+            "branch_id": "main"
+          }
+        ],
+        "assessment": {
+          "score": 0.0,
+          "valid": true,
+          "artifact_id": "48a57cda03164b2f5372bbf94d3dfbd6c748636f76e7f09cee974abb13146865",
+          "reason": ""
+        },
+        "status": "completed",
+        "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+      }
+    ],
+    "expected_executions": 8,
+    "dispatch_version": 0,
+    "conditioning_key": "55c8e771afc436117e116e8111dea67093717e10a3f9bd57cca545a6243a30c4"
+  }
+}

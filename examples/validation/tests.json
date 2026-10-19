@@ -1,0 +1,385 @@
+{
+  "tests_run": 92,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 92,
+  "successful": true,
+  "source_checkout_supplied": true,
+  "python": "3.12.14",
+  "elapsed_seconds": 3.715530858999955,
+  "tests": [
+    {
+      "test": "test_config.ConfigurationTests.test_defaults_valid",
+      "status": "passed"
+    },
+    {
+      "test": "test_config.ConfigurationTests.test_guarded_async_profile",
+      "status": "passed"
+    },
+    {
+      "test": "test_config.ConfigurationTests.test_incompatible_combinations_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_all_five_schemas_normalize_without_fabricated_fields",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_canonical_jsonl_round_trip_preserves_metadata",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_canonical_private_metadata_must_match_source_envelope",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_image_aliases_follow_explicit_mapping",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_metadata_identifier_disagreement_fails",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_model_input_excludes_private_test_material",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_registered_domain_does_not_imply_registered_environment_type",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.DataTests.test_unknown_schema_and_mutable_revision_are_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.ParquetDataTests.test_actual_parquet_streams_all_five_schemas_and_round_trips",
+      "status": "passed"
+    },
+    {
+      "test": "test_data.ParquetDataTests.test_prepare_mimo_cli_reports_consumed_iterator_count",
+      "status": "passed"
+    },
+    {
+      "test": "test_distillation.DistillationTests.test_full_vocab_shared_mapping_and_teacher_detach",
+      "status": "passed"
+    },
+    {
+      "test": "test_distillation.DistillationTests.test_mask_and_identity",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.NumpyObjectiveTests.test_denominator_cannot_drop_empty_slots",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.NumpyObjectiveTests.test_empty_original_slots_keep_weight",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.NumpyObjectiveTests.test_masked_nan_ignored_but_active_nan_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.NumpyObjectiveTests.test_sign_aware_clipping",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.TorchObjectiveTests.test_distributed_sum_count_equivalence",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.TorchObjectiveTests.test_empty_execution_zero_gradient",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.TorchObjectiveTests.test_importance_cap_and_sequence_clipping_have_distinct_roles",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.TorchObjectiveTests.test_matches_independent_numpy_oracle",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.TorchObjectiveTests.test_only_logp_receives_exact_semigradient",
+      "status": "passed"
+    },
+    {
+      "test": "test_objective.TorchObjectiveTests.test_upper_loss_cap_not_absolute_clip",
+      "status": "passed"
+    },
+    {
+      "test": "test_pipeline.PipelineTests.test_artifact_and_execution_binding_are_enforced",
+      "status": "passed"
+    },
+    {
+      "test": "test_pipeline.PipelineTests.test_different_routes_share_loss_batch_without_sharing_baselines",
+      "status": "passed"
+    },
+    {
+      "test": "test_pipeline.PipelineTests.test_group_size_and_missing_slots_cannot_change_weighting",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_capped_gar_recenters_both_successes_and_failures",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_cost_centering_equals_centering_combined_rewards",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_effort_decay_and_cap",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_explicit_scalar_route_centers_without_thresholding",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_finite_nonempty_and_boolean_contracts",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_grs_preserves_failure_gate_and_all_pass_learning",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_hacks_change_all_group_statistics_before_grading",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_length_penalty_only_successes_and_strict_gate",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_route_conflicts_are_executable_errors",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_scalar_hacks_and_costs_are_applied_before_final_centering",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_scalar_range_and_grading_conflicts_are_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_tiny_gar_factors_cannot_create_nonfinite_diagnostics",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_uncapped_gar_redistributes_positive_mass_and_leaves_failures",
+      "status": "passed"
+    },
+    {
+      "test": "test_rewards.RewardTests.test_unusable_gar_output_falls_back_to_corrected_binary",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.CacheAndChunkTests.test_age_guard_prevents_probe_starvation_of_other_requests",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.CacheAndChunkTests.test_cache_requires_every_identity_component",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.CacheAndChunkTests.test_chunk_respects_memory_and_frozen_policy",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.CacheAndChunkTests.test_cost_choice_uses_matching_cache_and_returns_reprefill_for_mismatch",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.CacheAndChunkTests.test_group_prediction_drives_remaining_long_work_after_probes",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.CacheAndChunkTests.test_homogeneous_prediction_groups_reject_different_prompts",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.CacheAndChunkTests.test_one_chunk_per_engine_prevents_unreserved_concurrent_placement",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.ElasticGuardTests.test_supply_hysteresis_and_remaining_batch_cap",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.ElasticGuardTests.test_waterlevel_covers_queued_and_running_executions",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_async_preserves_boundary_quota_and_masks_actual_token_lag",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_dispatch_lag_is_not_behavior_lag",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_final_boundary_fill_rejects_impossible_domain_mix_atomically",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_fixed_domain_mix_does_not_take_first_ready_groups",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_invalid_group_can_only_be_replaced_as_a_whole",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_stage_barrier_cancels_old_data_without_permitting_replay",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_strict_rejects_stale_instead_of_masking",
+      "status": "passed"
+    },
+    {
+      "test": "test_scheduler.GroupSchedulerTests.test_strict_roundtrip_and_exactly_once_consumption",
+      "status": "passed"
+    },
+    {
+      "test": "test_training.EndToEndTests.test_async_uses_delayed_versions_and_finishes_at_clean_stage",
+      "status": "passed"
+    },
+    {
+      "test": "test_training.EndToEndTests.test_recorded_behavior_is_initial_sampler_not_updated_model",
+      "status": "passed"
+    },
+    {
+      "test": "test_training.EndToEndTests.test_small_configured_grading_stages_execute",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_assessable_partial_work_is_permitted",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_compaction_does_not_recondition_old_tokens",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_conditioning_key_cannot_be_hidden_by_matching_group_id",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_duplicate_generation_identity_is_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_empty_execution_slots_and_valid_zero_reward_are_preserved",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_equal_independent_outputs_are_distinct_generation_events",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_future_behavior_policy_is_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_incomplete_original_group_never_updates",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_infrastructure_zero_does_not_enter_group_statistics",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_invalid_evaluation_is_not_a_valid_zero",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_missing_behavior_metadata_cannot_be_silently_recomputed",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_original_replicate_count_requires_an_integer",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_path_cap_is_deterministic_and_obeys_role_priority",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_provenance_overrides_assistant_like_role_and_context_is_preserved",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_shared_prefix_counted_once_and_context_never_reconstructed",
+      "status": "passed"
+    },
+    {
+      "test": "test_trajectory.TrajectoryAdmissionTests.test_stale_tokens_masked_before_selection_but_remain_in_context",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.BatchContractTests.test_complete_batch",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.BatchContractTests.test_missing_empty_execution_cannot_silently_shrink_denominator",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.BatchContractTests.test_padding_staleness_multipath_and_infra_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.ConfigContractTests.test_actual_dataset_sampler_overrides_are_checked",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.ConfigContractTests.test_async_and_truncated_sampler_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.ConfigContractTests.test_batch_microbatch_configuration_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.ConfigContractTests.test_second_correction_or_prompt_mean_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.ConfigContractTests.test_supported_profile",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.LossAdapterTests.test_binary_advantage_and_nonbinary_failure",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.LossAdapterTests.test_extra_weights_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.LossAdapterTests.test_policy_loss_matches_core_and_global_microbatch_sum",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.PinnedSourceTests.test_actual_source_signatures_and_patch_application",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.PinnedSourceTests.test_manifest_has_expected_api_and_exact_hashes",
+      "status": "passed"
+    },
+    {
+      "test": "test_verl_contract.PinnedSourceTests.test_real_hydra_defaults_compose_and_validate",
+      "status": "passed"
+    }
+  ],
+  "numpy_version": "2.3.5",
+  "torch_version": "2.6.0+cpu",
+  "hydra_version": "1.3.2",
+  "pyarrow_version": "19.0.1"
+}

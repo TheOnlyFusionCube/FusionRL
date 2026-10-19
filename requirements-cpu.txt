@@ -1,0 +1,7 @@
+# Tested CPU reference environment. Install with:
+# python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+# python -m pip install -e .
+# Keep this environment separate from the pinned verl GPU environment.
+numpy>=1.24,<3
+torch==2.6.0
+

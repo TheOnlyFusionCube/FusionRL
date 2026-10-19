@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "reward": {"route": "scalar", "length_mode": "none"},
+  "train": {"steps": 100, "learning_rate": 0.01, "seed": 7}
+}
+

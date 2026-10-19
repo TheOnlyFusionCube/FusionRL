@@ -1,0 +1,75 @@
+--- a/verl/trainer/main_ppo.py
++++ b/verl/trainer/main_ppo.py
+@@ -171,6 +171,15 @@
+     Args:
+         config: Hydra configuration dictionary containing training parameters.
+     """
++    # FusionRL validates its narrower contract before launching any Ray workers.
++    if (
++        config.actor_rollout_ref.actor.policy_loss.loss_mode == "fusionrl_execution"
++        or config.algorithm.adv_estimator == "fusionrl_binary"
++    ):
++        from fusionrl.integrations.verl.plugin import validate_and_register
++
++        validate_and_register(config)
++
+     # Automatically set `config.trainer.device = npu` when running on Ascend NPU.
+     auto_set_device(config)
+ 
+--- a/verl/trainer/ppo/v1/trainer_base.py
++++ b/verl/trainer/ppo/v1/trainer_base.py
+@@ -816,6 +816,11 @@
+         # 3. balance batch across data parallel groups
+         batch = self._balance_batch(batch, metrics=metrics)
+ 
++        if self.config.actor_rollout_ref.actor.policy_loss.loss_mode == "fusionrl_execution":
++            from fusionrl.integrations.verl.plugin import guard_training_batch
++
++            batch = guard_training_batch(batch, self.config, self.global_steps)
++
+         # 4. compute old_log_prob
+         with marked_timer("old_log_prob", timing_raw, color="blue"):
+             batch = self._compute_old_log_prob(batch, metrics=metrics)
+@@ -1770,6 +1775,12 @@
+ 
+     def _compute_old_log_prob(self, batch: KVBatchMeta, metrics: dict) -> KVBatchMeta:
+         """Compute the old log prob of the batch."""
++        if self.config.actor_rollout_ref.actor.policy_loss.loss_mode == "fusionrl_execution":
++            from fusionrl.integrations.verl.plugin import copy_behavior_log_probs
++
++            # FusionRL needs the probability that actually sampled each action.
++            return copy_behavior_log_probs(batch)
++
+         # Operating Mode Selection:
+         # - Bypass mode: Sets old_log_probs = rollout_log_probs (2 policies: π_rollout, π_θ)
+         # - Decoupled mode: Recomputes old_log_probs as proximal anchor (3 policies: π_rollout, π_old, π_θ)
+--- a/verl/workers/utils/losses.py
++++ b/verl/workers/utils/losses.py
+@@ -105,6 +105,10 @@
+ 
+     loss_mode = config.policy_loss.get("loss_mode", "vanilla")
+ 
++    if loss_mode == "fusionrl_execution":
++        from fusionrl.integrations.verl.plugin import ensure_registered
++
++        ensure_registered()
+     policy_loss_fn = get_policy_loss_fn(loss_mode)
+     pg_loss, pg_metrics = policy_loss_fn(
+         old_log_prob=old_log_prob,
+--- a/verl/experimental/agent_loop/agent_loop.py
++++ b/verl/experimental/agent_loop/agent_loop.py
+@@ -686,6 +686,14 @@
+         trace: bool = True,
+         **kwargs,
+     ) -> _InternalAgentLoopOutput:
++        if (
++            self.config.actor_rollout_ref.actor.policy_loss.loss_mode == "fusionrl_execution"
++            and not trajectory["validate"]
++        ):
++            from fusionrl.integrations.verl.contracts import validate_rollout_request
++
++            validate_rollout_request(agent_name, sampling_params)
++
+         with rollout_trace_attr(
+             step=trajectory["step"],
+             sample_index=trajectory["sample_index"],
