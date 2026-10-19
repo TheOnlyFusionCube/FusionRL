@@ -49,6 +49,7 @@ def main(argv=None) -> int:
     parser.add_argument("--registry-mirror", default="", help="e.g. mirror.gcr.io (replaces docker.io)")
     parser.add_argument("--sample", type=int, default=0, help="audit a seeded random sample of this size")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--task-ids", nargs="+", help="audit only these canonical task IDs")
     parser.add_argument("--harden", action="store_true")
     parser.add_argument("--attest", action="store_true", help="implies --harden")
     parser.add_argument("--store", type=Path, help="attestation directory (required with --attest)")
@@ -63,6 +64,11 @@ def main(argv=None) -> int:
         parser.error("refusing to overwrite an existing audit log")
     mapping = read_image_mapping(args.image_map)
     records = [r for r in load_jsonl(args.tasks) if r.subset != "music"]
+    if args.task_ids:
+        wanted = set(args.task_ids)
+        records = [r for r in records if r.task_id in wanted]
+        if len(records) != len(wanted):
+            parser.error("some --task-ids are not in --tasks")
     if args.sample:
         records = random.Random(args.seed).sample(records, min(args.sample, len(records)))
     network_args = shlex.split(args.network_args)

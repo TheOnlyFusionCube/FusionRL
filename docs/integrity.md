@@ -26,13 +26,20 @@ Measured on the pinned MiMo-V2.6-RL-oss snapshot (`971cab2…`) with the tools b
 - All 2,602 use mutable image tags (`format-code-task-…:latest`). A dataset commit does not pin image contents.
 - All 2,602 grade with `bash /testbed/mimo_test_command.sh`, a path inside the agent's workspace that the hidden test patch creates at grading time. A policy can pre-create it unless grading runs from a fresh container with the candidate's diff sanitized (below).
 
-**Image audit of `format-code-task-001457`** (pulled from the public Docker Hub image):
+**Image audits** of 9 code-task images: `format-code-task-001457`, plus a seeded random sample of 8 (`scripts/audit_mimo_images.py --sample 8 --seed 1`). The images were pulled from Docker Hub, audited without being run, and the ambiguous ones re-checked with the corrected audit:
 
-- Git: clean. HEAD is detached, and all 893 objects are reachable from it.
-- **Timestamps leak the fix.** Outside `node_modules`, 36 files share one mtime, and five files are 72 seconds newer: `src/action.js`, `action.yml`, `README.md`, `package-lock.json` and `src/action.test.js`. The issue is "make `secrets` optional", and these are the files such a fix touches. `find -newer` reveals them, and `src/action.test.js` is also the file the hidden test patch edits.
-- After hardening, all 17,963 workspace files share one timestamp and the audit passes. The task behaves identically: same Node version, clean `git status`, and the same 24 tests pass with `--network none`.
+| Leak class | Images | Detail |
+|---|---:|---|
+| Timestamps reveal the fix's scope | **at least 6 of 9** | Source files newer than the rest of the checkout. In 5 of these, the newer set includes the file the hidden test patch edits. Examples: `001457` (5 of 41 non-dependency files, including `src/action.js`, `action.yml` and `src/action.test.js`); `000573` (exactly `bluesky/callbacks/core.py` and `bluesky/tests/test_callbacks.py`, out of 75 files); `000146` (`pytorch_lightning/callbacks/early_stopping.py`, `model_checkpoint.py`, `CHANGELOG.md` and `tests/callbacks/test_early_stopping.py`). |
+| Unreachable fix commits | 0 of 9 | No image held commits outside HEAD's history. The extra objects found were annotated release tags labelling HEAD's own history (verified on `000573`), or none at all after re-checking (`000146`, `002520`, `002512`). Two large images (`000745`, `000922`) had 201 and 2 non-commit extra objects and were not re-checked. |
+| Clean | 1 of 9 | `001623` |
+| Undetermined | 2 of 9 | `001461` and `000922` had many newer files; the first 50 listed were all installed packages (`.venv`, caches) and they were not re-checked with the corrected audit |
 
-A larger image sample was rate-limited by the registry in this environment; see [validation.md](validation.md) for what completed. Run `scripts/audit_mimo_images.py` on your own infrastructure before training.
+This sample is too small for a population rate, and it disagrees with vals.ai's 67% for unreachable fix objects. The images may have been rebuilt since their audit, or the difference may be sampling. It agrees with their timestamp finding, and that leak is common.
+
+Hardening fixed every image it was run on (`001457`, `000146`, `002520`): each hardened copy passes the audit with one uniform workspace timestamp. `001457` behaves identically after hardening: same Node version, clean `git status`, and the same 24 Jest tests pass with `--network none`. In `000146`, PyTorch Lightning still imports.
+
+The first version of the audit over-reported on these images. It counted annotated release tags as hidden objects, counted reflogs and `COMMIT_EDITMSG` that only repeat HEAD, and counted newer timestamps in `.venv`/`__pycache__`. Each is now classified correctly, with regression tests.
 
 ## Layers
 

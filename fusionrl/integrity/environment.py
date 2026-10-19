@@ -676,6 +676,12 @@ def harden_image(image: str, tag: str, *, workspace: str, normalize_paths: Seque
     the workspace's ``.git`` is staged on disk.
     """
     workspace = "/" + workspace.strip("/")
+    size = int(_docker("image", "inspect", "--format", "{{.Size}}", image).stdout.strip() or 0)
+    root = _docker("info", "--format", "{{.DockerRootDir}}").stdout.strip() or "/var/lib/docker"
+    free = shutil.disk_usage(root if os.path.exists(root) else "/").free
+    if free < 1.3 * size:
+        raise EnvironmentError_(f"hardening needs about {1.3 * size / 2**30:.1f} GiB free for the new image; "
+                                f"{free / 2**30:.1f} GiB available under {root}")
     args = ["import"]
     for change in _import_changes(image) + [f"LABEL org.fusionrl.hardened={AUDIT_VERSION}",
                                              f"LABEL org.fusionrl.source-image={image_id(image)}"]:

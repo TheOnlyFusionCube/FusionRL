@@ -19,6 +19,7 @@ test_static_dataset_audit (test_integrity.AttestationTests.test_static_dataset_a
 test_image_round_trip (test_integrity.DockerImageTests.test_image_round_trip) ... ok
 test_network_none_blocks_every_probe (test_integrity.DockerImageTests.test_network_none_blocks_every_probe) ... ok
 test_leaks_are_found_and_hardening_removes_them (test_integrity.EnvironmentAuditTests.test_leaks_are_found_and_hardening_removes_them) ... ok
+test_setup_artifacts_are_not_counted_as_solution_leaks (test_integrity.EnvironmentAuditTests.test_setup_artifacts_are_not_counted_as_solution_leaks) ... ok
 test_untrusted_git_config_is_never_executed (test_integrity.EnvironmentAuditTests.test_untrusted_git_config_is_never_executed) ... ok
 test_hack_is_strictly_worse_than_honest_failure (test_integrity.HackPenaltyTests.test_hack_is_strictly_worse_than_honest_failure) ... ok
 test_scheduler_can_quarantine_a_completed_group (test_integrity.HackPenaltyTests.test_scheduler_can_quarantine_a_completed_group) ... ok
@@ -121,6 +122,6 @@ test_manifest_has_expected_api_and_exact_hashes (test_verl_contract.PinnedSource
 test_real_hydra_defaults_compose_and_validate (test_verl_contract.PinnedSourceTests.test_real_hydra_defaults_compose_and_validate) ... ok
 
 ----------------------------------------------------------------------
-Ran 121 tests in 36.615s
+Ran 122 tests in 16.864s
 
 OK

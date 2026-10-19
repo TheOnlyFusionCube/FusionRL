@@ -132,9 +132,8 @@ These establish the plumbing and numerics on a real architecture and tokenizer. 
 ## Integrity checks on real MiMo data
 
 - Static audit of all 2,602 code tasks: no hidden tests leaked into prompts; 2,602 mutable image tags; 2,602 grading commands at a workspace path.
-- Image `format-code-task-001457`: the timestamp leak is present (5 non-dependency files, including the reference fix's scope, are 72 s newer than the other 36), and git is clean. After hardening the audit passes, and the task behaves identically: same 24 Jest tests pass with `--network none`.
-- Image `format-code-task-001623`: passes the raw audit.
-- The other images of an 8-task sample did not finish downloading through the registry mirror during this session (Docker Hub rate limits). Re-run `scripts/audit_mimo_images.py` with registry credentials for population rates; vals.ai's figure for unreachable fix objects is 67%.
+- Images (9 code tasks: `001457` plus a seeded sample of 8): in at least 6 of 9, source-file timestamps reveal the fix's scope, and in 5 of those the newer files include the file the hidden test patch edits. 0 of 9 held unreachable fix commits. 1 of 9 was clean. Details and caveats are in [integrity.md](integrity.md#what-was-found-in-the-real-dataset). Raw reports are in `examples/validation/integrity/mimo_image_audits.jsonl`: the `audit_sample` rows used the first audit version, before its false positives were fixed, and the `audit_recheck` rows used the corrected one.
+- Hardened copies of `001457`, `000146` and `002520` pass the audit. `001457` behaves identically after hardening (same 24 Jest tests pass with `--network none`).
 
 ## Remaining deployment evidence
 

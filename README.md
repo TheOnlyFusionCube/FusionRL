@@ -42,7 +42,7 @@ python scripts/audit_mimo_images.py --tasks code.jsonl --image-map image-mapping
 
 The real-model path was checked on CPU. With Qwen2.5-0.5B-Instruct, rollout and training log-probabilities agree to about 2e-6 and checkpoints reload bit-exact. With a tiny Llama in the test suite, resume reproduces an uninterrupted run exactly and two data-parallel ranks match one process. It has not been run on a GPU here. Run `preflight` on your hardware first.
 
-In the pinned MiMo dataset, a real code-task image (`format-code-task-001457`) leaks the reference fix's file list through timestamps, as vals.ai reported. All 2,602 code tasks use mutable image tags and grade from a script path inside the agent workspace. Hardening removes the leak without changing task behavior. Do not train on MiMo environments that have not been attested.
+In at least 6 of 9 audited MiMo code-task images, file timestamps reveal the reference fix's scope, as vals.ai reported. None of the 9 held unreachable fix commits. All 2,602 code tasks use mutable image tags and grade from a script path inside the agent workspace. Hardening removes the leak without changing task behavior. Do not train on MiMo environments that have not been attested.
 
 ## Included profiles
 

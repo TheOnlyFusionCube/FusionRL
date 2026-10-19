@@ -1,13 +1,13 @@
 {
-  "tests_run": 121,
+  "tests_run": 122,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "passed": 121,
+  "passed": 122,
   "successful": true,
   "source_checkout_supplied": true,
   "python": "3.13.16",
-  "elapsed_seconds": 39.59633334299997,
+  "elapsed_seconds": 19.392574868000338,
   "tests": [
     {
       "test": "test_config.ConfigurationTests.test_defaults_valid",
@@ -91,6 +91,10 @@
     },
     {
       "test": "test_integrity.EnvironmentAuditTests.test_leaks_are_found_and_hardening_removes_them",
+      "status": "passed"
+    },
+    {
+      "test": "test_integrity.EnvironmentAuditTests.test_setup_artifacts_are_not_counted_as_solution_leaks",
       "status": "passed"
     },
     {
